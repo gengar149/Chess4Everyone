@@ -13,30 +13,31 @@ public class Board : MonoBehaviour
     int column = 8;
 
     [HideInInspector]
-    int cellSize = 100;
-    [HideInInspector]
-    int cellOffset = 50;
-
-    [HideInInspector]
     public List<List<Cell>> allCells = new List<List<Cell>>();
 
     public void Create()
     {
-
+        float board_width = GetComponent<RectTransform>().rect.width;
+        float board_height = GetComponent<RectTransform>().rect.height;
 
         // Create
-        for (int x = 0; x < row; x++)
+        for (int x = 0; x < column; x++)
         {
             List<Cell> row_cell = new List<Cell>();
             allCells.Add(row_cell);
-            for (int y = 0; y < column; y++)
+            for (int y = 0; y < row; y++)
             {
                 // Create the cell
                 GameObject newCell = Instantiate(CellObject, transform);
 
                 // Position
                 RectTransform rectTransform = newCell.GetComponent<RectTransform>();
-                rectTransform.anchoredPosition = new Vector2((x * cellSize) + cellOffset, (y * cellSize) + cellOffset);
+                //rectTransform.anchoredPosition = new Vector2((x * cellSize) + cellOffset, (y * cellSize) + cellOffset);
+
+                float cell_width = board_width / column;
+                float cell_height = board_height / row;                
+                rectTransform.anchoredPosition = new Vector2(x * cell_width + cell_width / 2, y * cell_height + cell_height / 2);
+                rectTransform.sizeDelta = new Vector2(cell_width, cell_height);
 
                 // Setup
                 row_cell.Add(newCell.GetComponent<Cell>());
@@ -46,9 +47,9 @@ public class Board : MonoBehaviour
         }
 
         // Color
-        for (int x = 0; x < row; x += 2)
+        for (int x = 0; x < column; x += 2)
         {
-            for (int y = 0; y < column; y++)
+            for (int y = 0; y < row; y++)
             {
                 // Offset for every other line
                 int offset = (y % 2 != 0) ? 0 : 1;
@@ -61,5 +62,4 @@ public class Board : MonoBehaviour
             }
         }
     }
-
 }
