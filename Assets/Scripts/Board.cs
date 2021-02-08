@@ -8,12 +8,15 @@ public class Board : MonoBehaviour
     public GameObject CellObject;
 
     [HideInInspector]
-    int row = 8;
+    private int row = 8;
     [HideInInspector]
-    int column = 8;
+    private int column = 8;
 
     [HideInInspector]
     public List<List<Cell>> allCells = new List<List<Cell>>();
+
+    public int Row { get => row; set => row = value; }
+    public int Column { get => column; set => column = value; }
 
     public void Create()
     {
@@ -21,11 +24,11 @@ public class Board : MonoBehaviour
         float board_height = GetComponent<RectTransform>().rect.height;
 
         // Create
-        for (int x = 0; x < column; x++)
+        for (int x = 0; x < Column; x++)
         {
             List<Cell> row_cell = new List<Cell>();
             allCells.Add(row_cell);
-            for (int y = 0; y < row; y++)
+            for (int y = 0; y < Row; y++)
             {
                 // Create the cell
                 GameObject newCell = Instantiate(CellObject, transform);
@@ -34,8 +37,8 @@ public class Board : MonoBehaviour
                 RectTransform rectTransform = newCell.GetComponent<RectTransform>();
                 //rectTransform.anchoredPosition = new Vector2((x * cellSize) + cellOffset, (y * cellSize) + cellOffset);
 
-                float cell_width = board_width / column;
-                float cell_height = board_height / row;                
+                float cell_width = board_width / Column;
+                float cell_height = board_height / Row;                
                 rectTransform.anchoredPosition = new Vector2(x * cell_width + cell_width / 2, y * cell_height + cell_height / 2);
                 rectTransform.sizeDelta = new Vector2(cell_width, cell_height);
 
@@ -47,9 +50,9 @@ public class Board : MonoBehaviour
         }
 
         // Color
-        for (int x = 0; x < column; x += 2)
+        for (int x = 0; x < Column; x += 2)
         {
-            for (int y = 0; y < row; y++)
+            for (int y = 0; y < Row; y++)
             {
                 // Offset for every other line
                 int offset = (y % 2 != 0) ? 0 : 1;
