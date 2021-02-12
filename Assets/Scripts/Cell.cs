@@ -13,6 +13,8 @@ public class Cell : MonoBehaviour
     public Board board = null;
     [HideInInspector]
     public RectTransform rectTransform = null;
+    [HideInInspector]
+    public BasePiece currentPiece;
 
 
     public void Setup(Vector2Int newBoardPosition, Board newBoard)
