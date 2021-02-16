@@ -4,22 +4,27 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Timer : MonoBehaviour
+public class Timer
 {
-    public float timeRemaining = 10;
-    public bool timerIsRunning = false;
+    private float timeRemaining;
+    private bool timerIsRunning = false;
     private TMP_Text clock;
+
+    public void Setup(float timeMax, TMP_Text display)
+    {
+        timeRemaining = timeMax;
+        clock = display;
+    }
 
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        clock = GetComponent<TMP_Text>();
         timerIsRunning = true;
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         if (timerIsRunning)
         {
@@ -37,7 +42,7 @@ public class Timer : MonoBehaviour
         }
     }
 
-    void DisplayTime(float timeToDisplay)
+    public void DisplayTime(float timeToDisplay)
     {
         float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
