@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Cell : MonoBehaviour
 {
-    public Image OutlineImage;
+    public Image outlineImage;
 
     [HideInInspector]
     public Vector2Int boardPosition = Vector2Int.zero;
@@ -23,5 +23,6 @@ public class Cell : MonoBehaviour
         board = newBoard;
 
         rectTransform = GetComponent<RectTransform>();
+        outlineImage.enabled = false;
     }
 }

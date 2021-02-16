@@ -93,7 +93,7 @@ public class PieceManager : MonoBehaviour
 
     private void PlacePieces(string pawnRow, string royaltyRow, List<BasePiece> pieces, Board board)
     {
-        for (int i = 0; i < board.Row; i++)
+        for (int i = 0; i < board.Column; i++)
         {
             pieces[i].Place(board.allCells[i][coordB[pawnRow]]);
             pieces[i + 8].Place(board.allCells[i][coordB[royaltyRow]]);
