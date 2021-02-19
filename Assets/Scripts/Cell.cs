@@ -25,4 +25,12 @@ public class Cell : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         outlineImage.enabled = false;
     }
+
+    public void RemovePiece()
+    {
+        if (currentPiece != null)
+        {
+            currentPiece.Kill();
+        }
+    }
 }

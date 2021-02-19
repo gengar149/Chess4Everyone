@@ -20,6 +20,11 @@ public abstract class BasePiece : EventTrigger
     protected Vector3Int movement = Vector3Int.one;
     protected List<Cell> highlightedCells = new List<Cell>();
 
+    /// <summary>
+    /// Cellule visée par la souris
+    /// </summary>
+    protected Cell targetCell = null;
+
     public static int CellPadding { get => cellPadding; }
 
     public virtual void Setup(bool newIsWhite, PieceManager newPM)
@@ -86,13 +91,13 @@ public abstract class BasePiece : EventTrigger
         CreateCellPath(1, -1, movement.z);
     }
 
-    protected void ShowCells()
+    protected void ShowCellsHighlight()
     {
         foreach (Cell cell in highlightedCells)
             cell.outlineImage.enabled = true;
     }
 
-    protected void ClearCells()
+    protected void ClearCellsHighlight()
     {
         foreach (Cell cell in highlightedCells)
             cell.outlineImage.enabled = false;
@@ -108,7 +113,9 @@ public abstract class BasePiece : EventTrigger
         CheckPathing();
 
         // Show valid cells
-        ShowCells();
+        ShowCellsHighlight();
+
+        transform.position = Input.mousePosition;
     }
 
     public override void OnDrag(PointerEventData eventData)
@@ -117,44 +124,60 @@ public abstract class BasePiece : EventTrigger
 
         // Follow pointer
         transform.position += (Vector3)eventData.delta;
-
-        /*
-        // Check for overlapping available squares
-        foreach (Cell cell in mHighlightedCells)
-        {
-            if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, Input.mousePosition))
-            {
-                // If the mouse is within a valid cell, get it, and break.
-                mTargetCell = cell;
-                break;
-            }
-
-            // If the mouse is not within any highlighted cell, we don't have a valid move.
-            mTargetCell = null;
-        }
-        */
     }
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        base.OnEndDrag(eventData);
+        base.OnEndDrag(eventData);        
 
-        // Hide
-        ClearCells();
-
-        /*
-        // Return to original position
-        if (!mTargetCell)
+        // Get target cell
+        targetCell = null;
+        foreach (Cell cell in highlightedCells)
         {
-            transform.position = mCurrentCell.gameObject.transform.position;
-            return;
+            if (RectTransformUtility.RectangleContainsScreenPoint(cell.rectTransform, Input.mousePosition))
+            {
+                targetCell = cell;
+                break;
+            }            
         }
 
-        // Move to new cell
-        Move();
+        // Return to his original position
+        if (!targetCell)
+        {
+            transform.position = currentCell.transform.position; // gameObject
+        }
+        else
+        {
+            Move();
+        }
 
-        // End turn
-        mPieceManager.SwitchSides(mColor);
-        */
+        // Hide Highlited
+        ClearCellsHighlight();
+    }
+
+    public void Reset()
+    {
+        Kill();
+        Place(originalCell);
+    }
+
+    public virtual void Kill()
+    {
+        currentCell.currentPiece = null;
+        gameObject.SetActive(false);
+    }
+
+    public virtual void Move()
+    {
+        // If there is a piece, remove it
+        targetCell.RemovePiece();
+
+        currentCell.currentPiece = null;
+
+        currentCell = targetCell;
+        currentCell.currentPiece = this;
+
+        transform.position = currentCell.transform.position;
+        targetCell = null;
     }
 }
