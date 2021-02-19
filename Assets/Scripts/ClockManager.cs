@@ -6,6 +6,7 @@ using UnityEngine;
 public class ClockManager : MonoBehaviour
 {
     // Start is called before the first frame update
+
     private Timer clockWhite;
     private Timer clockBlack;
 
@@ -14,9 +15,9 @@ public class ClockManager : MonoBehaviour
 
     private bool isWhiteTurn = true;
 
-
     void Start()
     {
+        
         clockWhite = new Timer();
         clockBlack = new Timer();
        
