@@ -125,6 +125,7 @@ public abstract class BasePiece : EventTrigger
         ShowCellsHighlight();
 
         transform.position = Input.mousePosition;
+        transform.SetAsLastSibling();
     }
 
     public override void OnDrag(PointerEventData eventData)
