@@ -13,6 +13,11 @@ public class ClockManager : MonoBehaviour
     public TMP_Text displayWhite;
     public TMP_Text displayBlack;
 
+    public GameObject highlightClockW;
+    public GameObject highlightClockB;
+
+
+
     private bool isWhiteTurn = true;
 
     void Start()
@@ -26,6 +31,11 @@ public class ClockManager : MonoBehaviour
 
         clockWhite.Start();
         clockBlack.Start();
+      
+        highlightClockW.SetActive(true);
+        highlightClockB.SetActive(false);
+
+        
     }
 
     // Update is called once per frame
@@ -42,5 +52,8 @@ public class ClockManager : MonoBehaviour
     public void changeTurn()
     {
         isWhiteTurn = !isWhiteTurn;
+        highlightClockW.SetActive(!highlightClockW.activeSelf);
+        highlightClockB.SetActive(!highlightClockB.activeSelf);
+
     }
 }
