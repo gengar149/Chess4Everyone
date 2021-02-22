@@ -70,7 +70,11 @@ public abstract class BasePiece : EventTrigger
                 // Add to list
                 if (state == CellState.ENEMY)
                 {
-                    targeted.outlineImage.GetComponent<Image>().color = new Color(255,0,0,180);
+                    targeted.outlineImage.GetComponent<Image>().color = new Color(1,0,0, (float)0.5);
+                }
+                else
+                {
+                    targeted.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
                 }
                 highlightedCells.Add(targeted);
             }            
