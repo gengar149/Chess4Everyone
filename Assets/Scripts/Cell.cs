@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum CellState
+{
+    NONE,
+    FRIEND,
+    ENEMY,
+    FREE
+}
+
 public class Cell : MonoBehaviour
 {
     public Image outlineImage;
@@ -32,5 +40,24 @@ public class Cell : MonoBehaviour
         {
             currentPiece.Kill();
         }
+    }
+
+    public CellState GetState(BasePiece checkingPiece)
+    {
+        if(currentPiece != null)
+        {
+            // if friend
+            if (checkingPiece.isWhite == currentPiece.isWhite)
+            {
+                return CellState.FRIEND;
+            }
+            // if enemy
+            else
+            {
+                return CellState.ENEMY;
+            }
+
+        }
+        return CellState.FREE;
     }
 }

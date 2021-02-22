@@ -57,18 +57,20 @@ public abstract class BasePiece : EventTrigger
             currentX += xDirection;
             currentY += yDirection;
 
-            // TODO state
+            Cell targeted = currentCell.board.allCells[currentX][currentY];
 
-            // Add to list
-            try
+            if(targeted.GetState(this) != CellState.FRIEND)
             {
-                highlightedCells.Add(currentCell.board.allCells[currentX][currentY]);
-            }
-            catch
-            {
+                // Add to list
+                try
+                {
+                    highlightedCells.Add(targeted);
+                }
+                catch
+                {
 
-            }
-            
+                }
+            }            
         }
     }
 

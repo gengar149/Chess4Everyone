@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PieceManager : MonoBehaviour
 {
+    [HideInInspector]
+    public bool isKingAlive;
+
     public GameObject piecePrefab;
 
     private List<BasePiece> whitePieces = null;
@@ -50,6 +53,8 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        isKingAlive = true;
+
         whitePieces = CreatePieces(true, board);
         blackPieces = CreatePieces(false, board);
 
