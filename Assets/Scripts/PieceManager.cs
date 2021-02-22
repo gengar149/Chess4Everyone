@@ -2,11 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PieceManager : MonoBehaviour
 {
     [HideInInspector]
     public bool isKingAlive;
+
+    [HideInInspector]
+    public bool isWhiteTurn;
 
     public GameObject piecePrefab;
 
@@ -60,6 +64,9 @@ public class PieceManager : MonoBehaviour
 
         PlacePieces("2", "1", whitePieces, board);
         PlacePieces("7", "8", blackPieces, board);
+
+        SetColor(blackPieces, Color.grey);
+        SetTurn(true);
     }
 
 
@@ -102,6 +109,31 @@ public class PieceManager : MonoBehaviour
         {
             pieces[i].Place(board.allCells[i][coordB[pawnRow]]);
             pieces[i + 8].Place(board.allCells[i][coordB[royaltyRow]]);
+        }
+    }
+
+    private void SetInteractive(List<BasePiece> pieces, bool state)
+    {
+        foreach(BasePiece piece in pieces)
+        {
+            piece.enabled = state;
+        }
+    }
+
+    public void SetTurn(bool isWhiteTurn)
+    {
+        if (isKingAlive == false)
+            return;
+
+        SetInteractive(whitePieces, isWhiteTurn);
+        SetInteractive(blackPieces, !isWhiteTurn);
+    }
+
+    public void SetColor(List<BasePiece> pieces, Color col)
+    {
+        foreach(BasePiece piece in pieces)
+        {
+            piece.GetComponent<Image>().color = col;
         }
     }
 }

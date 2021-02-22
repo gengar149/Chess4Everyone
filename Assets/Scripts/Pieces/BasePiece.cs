@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public abstract class BasePiece : EventTrigger
 {
@@ -57,19 +58,21 @@ public abstract class BasePiece : EventTrigger
             currentX += xDirection;
             currentY += yDirection;
 
+            if (currentX < 0 || currentY < 0 ||
+                currentX > currentCell.board.Column - 1 || currentY > currentCell.board.Row - 1)
+                continue;
+
             Cell targeted = currentCell.board.allCells[currentX][currentY];
 
-            if(targeted.GetState(this) != CellState.FRIEND)
+            CellState state = targeted.GetState(this);
+            if (state != CellState.FRIEND)
             {
                 // Add to list
-                try
+                if (state == CellState.ENEMY)
                 {
-                    highlightedCells.Add(targeted);
+                    targeted.outlineImage.GetComponent<Image>().color = new Color(255,0,0,180);
                 }
-                catch
-                {
-
-                }
+                highlightedCells.Add(targeted);
             }            
         }
     }
@@ -140,7 +143,7 @@ public abstract class BasePiece : EventTrigger
             {
                 targetCell = cell;
                 break;
-            }            
+            }
         }
 
         // Return to his original position
@@ -151,6 +154,7 @@ public abstract class BasePiece : EventTrigger
         else
         {
             Move();
+            pieceManager.SetTurn(!isWhite);
         }
 
         // Hide Highlited
