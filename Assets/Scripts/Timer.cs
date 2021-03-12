@@ -21,6 +21,7 @@ public class Timer
     public void Start()
     {
         timerIsRunning = true;
+        DisplayTime(timeRemaining);
     }
 
     // Update is called once per frame
