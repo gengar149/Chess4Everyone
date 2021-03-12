@@ -76,8 +76,10 @@ public abstract class BasePiece : EventTrigger
                 {
                     targeted.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
                 }
-                highlightedCells.Add(targeted);
-            }            
+                highlightedCells.Add(targeted);                
+            }
+            if (state != CellState.FREE)
+                break;
         }
     }
 
@@ -178,7 +180,7 @@ public abstract class BasePiece : EventTrigger
         gameObject.SetActive(false);
     }
 
-    public virtual void Move()
+    protected virtual void Move()
     {
         // If there is a piece, remove it
         targetCell.RemovePiece();
