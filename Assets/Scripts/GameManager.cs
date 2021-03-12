@@ -6,9 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public Board board;
 
+    public PieceManager pieceManager;
+
     void Start()
     {
         board.Create();
+
+        pieceManager.Setup(board);
     }
 }
 
