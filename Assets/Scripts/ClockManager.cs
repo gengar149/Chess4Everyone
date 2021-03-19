@@ -7,6 +7,8 @@ public class ClockManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
+
+
     private Timer clockWhite;
     private Timer clockBlack;
 
@@ -55,5 +57,12 @@ public class ClockManager : MonoBehaviour
         highlightClockW.SetActive(!highlightClockW.activeSelf);
         highlightClockB.SetActive(!highlightClockB.activeSelf);
 
+    }
+
+    public void setTurn(bool isWhiteTurn)
+    {
+        this.isWhiteTurn = isWhiteTurn;
+        highlightClockW.SetActive(isWhiteTurn);
+        highlightClockB.SetActive(!isWhiteTurn);
     }
 }

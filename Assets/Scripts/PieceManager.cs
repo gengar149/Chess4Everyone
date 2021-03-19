@@ -12,6 +12,8 @@ public class PieceManager : MonoBehaviour
     [HideInInspector]
     public bool isWhiteTurn;
 
+    public ClockManager clockManager;
+
     public GameObject piecePrefab;
 
     private List<BasePiece> whitePieces = null;
@@ -127,6 +129,8 @@ public class PieceManager : MonoBehaviour
 
         SetInteractive(whitePieces, isWhiteTurn);
         SetInteractive(blackPieces, !isWhiteTurn);
+
+        clockManager.setTurn(isWhiteTurn);
     }
 
     public void SetColor(List<BasePiece> pieces, Color col)
