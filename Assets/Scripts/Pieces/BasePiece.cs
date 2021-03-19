@@ -192,5 +192,11 @@ public abstract class BasePiece : EventTrigger
 
         transform.position = currentCell.transform.position;
         targetCell = null;
+
+        if(pieceManager.enPassantCell != null)
+        {
+            pieceManager.enPassantCell.enPassant = null;
+            pieceManager.enPassantCell = null;
+        }        
     }
 }

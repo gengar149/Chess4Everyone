@@ -8,7 +8,8 @@ public enum CellState
     NONE,
     FRIEND,
     ENEMY,
-    FREE
+    FREE,
+    PASSANT
 }
 
 public class Cell : MonoBehaviour
@@ -23,6 +24,8 @@ public class Cell : MonoBehaviour
     public RectTransform rectTransform = null;
     [HideInInspector]
     public BasePiece currentPiece;
+    [HideInInspector]
+    public Pawn enPassant;
 
 
     public void Setup(Vector2Int newBoardPosition, Board newBoard)
@@ -32,6 +35,8 @@ public class Cell : MonoBehaviour
 
         rectTransform = GetComponent<RectTransform>();
         outlineImage.enabled = false;
+
+        enPassant = null;
     }
 
     public void RemovePiece()
@@ -39,6 +44,10 @@ public class Cell : MonoBehaviour
         if (currentPiece != null)
         {
             currentPiece.Kill();
+        }
+        if(enPassant != null)
+        {
+            enPassant.Kill();
         }
     }
 
@@ -57,6 +66,13 @@ public class Cell : MonoBehaviour
                 return CellState.ENEMY;
             }
 
+        }
+        else
+        {
+            if(enPassant != null)
+            {
+                return CellState.PASSANT;
+            }
         }
         return CellState.FREE;
     }

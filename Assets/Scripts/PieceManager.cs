@@ -19,8 +19,11 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> whitePieces = null;
     private List<BasePiece> blackPieces = null;
 
+    [HideInInspector]
+    public Cell enPassantCell = null;
+
     private string[] pieceOrder = { "P", "P", "P", "P", "P", "P", "P", "P",
-        "R", "KN", "B", "K", "Q", "B", "KN", "R" };
+        "R", "KN", "B", "Q", "K", "B", "KN", "R" };
 
 
     private Dictionary<string, Type> pieceDico = new Dictionary<string, Type>()
@@ -69,6 +72,8 @@ public class PieceManager : MonoBehaviour
 
         SetColor(blackPieces, Color.grey);
         SetTurn(true);
+
+        enPassantCell = null;
     }
 
 

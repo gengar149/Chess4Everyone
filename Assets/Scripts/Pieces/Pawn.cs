@@ -8,7 +8,6 @@ public class Pawn : BasePiece
 {
     private bool isFirstMove = true;
 
-
     public override void Setup(bool newIsWhite, PieceManager newPM)
     {
         base.Setup(newIsWhite, newPM);
@@ -20,9 +19,22 @@ public class Pawn : BasePiece
 
     protected override void Move()
     {
+        // En passant
+        Cell targ = targetCell;
+        Cell beforeMove = currentCell;
+
         base.Move();
 
-        isFirstMove = false;
+        if (isFirstMove)
+        {
+            if (targ.boardPosition.y == beforeMove.boardPosition.y + 2 * movement.y)
+            {
+                Cell enPassantCell = beforeMove.board.allCells[beforeMove.boardPosition.x][beforeMove.boardPosition.y + movement.y];
+                enPassantCell.enPassant = this;
+                pieceManager.enPassantCell = enPassantCell;
+            }
+            isFirstMove = false;
+        }
     }
 
     private bool MatchesState(Cell target, CellState targetState)
@@ -32,7 +44,7 @@ public class Pawn : BasePiece
         if(cellstate == targetState)
         {
             // Add to list
-            if (cellstate == CellState.ENEMY)
+            if (cellstate == CellState.ENEMY || cellstate == CellState.PASSANT)
             {
                 target.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
             }
@@ -57,6 +69,7 @@ public class Pawn : BasePiece
         try
         {
             MatchesState(currentCell.board.allCells[currentX - movement.z][currentY + movement.z], CellState.ENEMY);
+            MatchesState(currentCell.board.allCells[currentX - movement.z][currentY + movement.z], CellState.PASSANT);
         }
         catch (Exception e) { e.ToString(); }
 
@@ -77,6 +90,7 @@ public class Pawn : BasePiece
         try
         {
             MatchesState(currentCell.board.allCells[currentX + movement.z][currentY + movement.z], CellState.ENEMY);
+            MatchesState(currentCell.board.allCells[currentX + movement.z][currentY + movement.z], CellState.PASSANT);
         }
         catch (Exception e) { e.ToString(); }
 
