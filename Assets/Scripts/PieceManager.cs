@@ -145,6 +145,39 @@ public class PieceManager : MonoBehaviour
             piece.GetComponent<Image>().color = col;
         }
     }
+
+    public void PawnPromotion(Pawn pawn, Cell promotionCell)
+    {
+        promotionCell.RemovePiece();
+        GameObject newPieceObject = Instantiate(piecePrefab);
+        newPieceObject.transform.SetParent(transform);
+
+        newPieceObject.transform.localScale = new Vector3(1, 1, 1);
+        newPieceObject.transform.localRotation = Quaternion.identity;
+
+        float board_width = promotionCell.board.GetComponent<RectTransform>().rect.width;
+        float board_height = promotionCell.board.GetComponent<RectTransform>().rect.height;
+
+        float piece_width = board_width / promotionCell.board.Column - BasePiece.CellPadding;
+        float piece_height = board_height / promotionCell.board.Row - BasePiece.CellPadding;
+        newPieceObject.GetComponent<RectTransform>().sizeDelta = new Vector2(piece_width, piece_height);
+
+        Queen queen = (Queen)newPieceObject.AddComponent(typeof(Queen));
+        //base.pieceManager.pieceList.Add(newPiece);
+
+        queen.Setup(pawn.isWhite, this);
+        queen.Place(promotionCell);
+        if (pawn.isWhite)
+        {
+            whitePieces.Add(queen);
+        } else
+        {
+            blackPieces.Add(queen);
+            queen.GetComponent<Image>().color = Color.grey;
+        }
+        queen.gameObject.SetActive(true);
+
+    }
 }
 
 

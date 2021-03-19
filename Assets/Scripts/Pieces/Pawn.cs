@@ -24,7 +24,7 @@ public class Pawn : BasePiece
         Cell beforeMove = currentCell;
 
         base.Move();
-
+		
         if (isFirstMove)
         {
             if (targ.boardPosition.y == beforeMove.boardPosition.y + 2 * movement.y)
@@ -35,6 +35,11 @@ public class Pawn : BasePiece
             }
             isFirstMove = false;
         }
+        if(currentCell.boardPosition.y == 0 || currentCell.boardPosition.y == 7)
+        {
+            pieceManager.PawnPromotion(this, currentCell);
+        }
+
     }
 
     private bool MatchesState(Cell target, CellState targetState)
