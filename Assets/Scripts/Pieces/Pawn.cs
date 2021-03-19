@@ -22,6 +22,11 @@ public class Pawn : BasePiece
     {
         base.Move();
 
+        if(currentCell.boardPosition.y == 0 || currentCell.boardPosition.y == 7)
+        {
+            pieceManager.PawnPromotion(this, currentCell);
+        }
+
         isFirstMove = false;
     }
 
