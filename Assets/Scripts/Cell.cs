@@ -9,7 +9,8 @@ public enum CellState
     FRIEND,
     ENEMY,
     FREE,
-    PASSANT
+    PASSANT, 
+    CHECK
 }
 
 public class Cell : MonoBehaviour
@@ -53,7 +54,39 @@ public class Cell : MonoBehaviour
 
     public CellState GetState(BasePiece checkingPiece)
     {
-        if(currentPiece != null)
+        //check
+        if (!checkingPiece.GetPieceManager().checkVerificationInProcess)
+        {
+            checkingPiece.GetPieceManager().checkVerificationInProcess = true;
+
+            BasePiece originalCurrentPiece = currentPiece;
+            Cell originalCurrentCell = checkingPiece.currentCell;
+
+            currentPiece = checkingPiece;
+            checkingPiece.currentCell.currentPiece = null;
+            checkingPiece.currentCell = this;
+
+            if (checkingPiece.isCheckVerif(!checkingPiece.isWhite))
+            {
+                checkingPiece.GetPieceManager().checkVerificationInProcess = false;
+
+                currentPiece = originalCurrentPiece;
+                checkingPiece.currentCell = originalCurrentCell;
+                checkingPiece.currentCell.currentPiece = checkingPiece;
+                
+
+                return CellState.CHECK;
+            }
+
+            currentPiece = originalCurrentPiece;
+            checkingPiece.currentCell = originalCurrentCell;
+            checkingPiece.currentCell.currentPiece = checkingPiece;
+
+            checkingPiece.GetPieceManager().checkVerificationInProcess = false;
+        }        
+
+        //other
+        if (currentPiece != null)
         {
             // if friend
             if (checkingPiece.isWhite == currentPiece.isWhite)
@@ -65,7 +98,6 @@ public class Cell : MonoBehaviour
             {
                 return CellState.ENEMY;
             }
-
         }
         else
         {

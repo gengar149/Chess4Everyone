@@ -22,6 +22,13 @@ public class PieceManager : MonoBehaviour
     [HideInInspector]
     public Cell enPassantCell = null;
 
+    [HideInInspector]
+    public King whiteKing = null;
+    [HideInInspector]
+    public King blackKing = null;
+    [HideInInspector]
+    public bool checkVerificationInProcess = false;
+
     private string[] pieceOrder = { "P", "P", "P", "P", "P", "P", "P", "P",
         "R", "KN", "B", "Q", "K", "B", "KN", "R" };
 
@@ -104,6 +111,14 @@ public class PieceManager : MonoBehaviour
             BasePiece newPiece = (BasePiece)newPieceObject.AddComponent(pieceType);
             pieceList.Add(newPiece);
 
+            if (pieceDico[key] == typeof(King))
+            {
+                if (isWhite)
+                    whiteKing = (King) newPiece;
+                else
+                    blackKing = (King) newPiece;
+            }
+
             newPiece.Setup(isWhite, this);
         }
 
@@ -114,8 +129,8 @@ public class PieceManager : MonoBehaviour
     {
         for (int i = 0; i < board.Column; i++)
         {
-            pieces[i].Place(board.allCells[i][coordB[pawnRow]]);
-            pieces[i + 8].Place(board.allCells[i][coordB[royaltyRow]]);
+            pieces[i].PlaceInit(board.allCells[i][coordB[pawnRow]]);
+            pieces[i + 8].PlaceInit(board.allCells[i][coordB[royaltyRow]]);
         }
     }
 
@@ -166,7 +181,7 @@ public class PieceManager : MonoBehaviour
         //base.pieceManager.pieceList.Add(newPiece);
 
         queen.Setup(pawn.isWhite, this);
-        queen.Place(promotionCell);
+        queen.PlaceInit(promotionCell);
         if (pawn.isWhite)
         {
             whitePieces.Add(queen);
@@ -176,7 +191,14 @@ public class PieceManager : MonoBehaviour
             queen.GetComponent<Image>().color = Color.grey;
         }
         queen.gameObject.SetActive(true);
+    }
 
+    public King getKing(bool isWhite)
+    {
+        if (isWhite)
+            return whiteKing;
+        else
+            return blackKing;
     }
 }
 

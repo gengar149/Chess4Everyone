@@ -13,18 +13,26 @@ public abstract class BasePiece : EventTrigger
     static int cellPadding = 10;
 
     protected Cell originalCell = null;
-    protected Cell currentCell = null;
+
+    [HideInInspector]
+    public Cell currentCell = null;
 
     protected RectTransform rt = null;
     protected PieceManager pieceManager;
 
     protected Vector3Int movement = Vector3Int.one;
     protected List<Cell> highlightedCells = new List<Cell>();
+    protected List<Cell> attackedCells = new List<Cell>();
 
     /// <summary>
     /// Cellule visée par la souris
     /// </summary>
     protected Cell targetCell = null;
+
+    public PieceManager GetPieceManager()
+    {
+        return pieceManager;
+    }
 
     public static int CellPadding { get => cellPadding; }
 
@@ -36,7 +44,7 @@ public abstract class BasePiece : EventTrigger
         rt = GetComponent<RectTransform>();
     }
 
-    public void Place(Cell newCell)
+    public void PlaceInit(Cell newCell)
     {
         currentCell = newCell;
         originalCell = newCell;
@@ -65,22 +73,36 @@ public abstract class BasePiece : EventTrigger
             Cell targeted = currentCell.board.allCells[currentX][currentY];
 
             CellState state = targeted.GetState(this);
-            if (state != CellState.FRIEND)
+            if (state != CellState.FRIEND && state != CellState.CHECK)
             {
-                // Add to list
-                if (state == CellState.ENEMY)
+                if (targeted != pieceManager.getKing(isWhite).currentCell && 
+                    targeted != pieceManager.getKing(!isWhite).currentCell)
                 {
-                    targeted.outlineImage.GetComponent<Image>().color = new Color(1,0,0, (float)0.5);
+                    // Add to list
+                    if (state == CellState.ENEMY)
+                    {
+                        targeted.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
+                    }
+                    else
+                    {
+                        targeted.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
+                    }
+                    //highlightedCells.Add(targeted);
                 }
-                else
-                {
-                    targeted.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
-                }
-                highlightedCells.Add(targeted);                
+
+                addPossibleCell(targeted);
             }
             if (state != CellState.FREE)
                 break;
         }
+    }
+
+    protected void addPossibleCell(Cell possibleCell)
+    {
+        if (pieceManager.checkVerificationInProcess)
+            attackedCells.Add(possibleCell);
+        else
+            highlightedCells.Add(possibleCell);
     }
 
     protected virtual void CheckPathing()
@@ -100,6 +122,7 @@ public abstract class BasePiece : EventTrigger
         // Lower diagonal
         CreateCellPath(-1, -1, movement.z);
         CreateCellPath(1, -1, movement.z);
+
     }
 
     protected void ShowCellsHighlight()
@@ -171,7 +194,7 @@ public abstract class BasePiece : EventTrigger
     public void Reset()
     {
         Kill();
-        Place(originalCell);
+        PlaceInit(originalCell);
     }
 
     public virtual void Kill()
@@ -197,6 +220,51 @@ public abstract class BasePiece : EventTrigger
         {
             pieceManager.enPassantCell.enPassant = null;
             pieceManager.enPassantCell = null;
-        }        
+        }
+
+        // verify if there is a check in the opposite side
+        pieceManager.checkVerificationInProcess = true;
+        if (isCheckVerif(isWhite))
+        {
+            pieceManager.getKing(!isWhite).setCheck(true);
+        }
+        if (pieceManager.getKing(isWhite).isCheck)
+        {
+            pieceManager.getKing(isWhite).setCheck(false);
+        }
+        pieceManager.checkVerificationInProcess = false;
+    }
+
+    public bool isCheckVerif(bool AttakingSideIsWhite)
+    {
+        foreach (List<Cell> row in currentCell.board.allCells)
+        {
+            foreach(Cell boardCell in row)
+            {
+                BasePiece pieceBoard = boardCell.currentPiece;
+                if(pieceBoard != null)
+                {
+                    King targetKing = pieceManager.getKing(!AttakingSideIsWhite);
+
+                    pieceBoard.CheckPathing();
+                    foreach (Cell cell in pieceBoard.attackedCells)
+                    {
+                        if(cell.boardPosition.x == targetKing.currentCell.boardPosition.x &&
+                            cell.boardPosition.y == targetKing.currentCell.boardPosition.y)
+                        {
+                            pieceBoard.ClearAttackedCell();
+                            return true;
+                        }
+                    }
+                    pieceBoard.ClearAttackedCell();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void ClearAttackedCell()
+    {
+        attackedCells.Clear();
     }
 }

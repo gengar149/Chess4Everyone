@@ -64,7 +64,7 @@ public class Knight : BasePiece
     {
         CellState targetState = target.GetState(this);
 
-        if(targetState != CellState.FRIEND)
+        if(targetState != CellState.FRIEND && targetState != CellState.CHECK)
         {
             // Add to list
             if (targetState == CellState.ENEMY)
@@ -75,7 +75,8 @@ public class Knight : BasePiece
             {
                 target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
             }
-            highlightedCells.Add(target);
+            //highlightedCells.Add(target);
+            addPossibleCell(target);
         }        
     }
 }

@@ -57,7 +57,8 @@ public class Pawn : BasePiece
             {
                 target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
             }
-            highlightedCells.Add(target);
+            //highlightedCells.Add(target);
+            addPossibleCell(target);
             return true;
         }
         return false;
