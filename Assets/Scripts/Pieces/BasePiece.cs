@@ -75,8 +75,7 @@ public abstract class BasePiece : EventTrigger
             CellState state = targeted.GetState(this);
             if (state != CellState.FRIEND && state != CellState.CHECK)
             {
-                if (targeted != pieceManager.getKing(isWhite).currentCell && 
-                    targeted != pieceManager.getKing(!isWhite).currentCell)
+                if (!pieceManager.checkVerificationInProcess)
                 {
                     // Add to list
                     if (state == CellState.ENEMY)
