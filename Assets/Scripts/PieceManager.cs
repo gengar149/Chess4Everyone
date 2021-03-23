@@ -64,7 +64,7 @@ public class PieceManager : MonoBehaviour
     {
         isKingAlive = true;
 
-        whitePieces = CreatePieces(true, board);
+    whitePieces = CreatePieces(true, board);
         blackPieces = CreatePieces(false, board);
 
         PlacePieces("2", "1", whitePieces, board);

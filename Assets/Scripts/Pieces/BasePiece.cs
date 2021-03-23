@@ -9,6 +9,9 @@ public abstract class BasePiece : EventTrigger
 {
     [HideInInspector]
     public bool isWhite;
+
+    public bool hasMoved;
+
     [HideInInspector]
     static int cellPadding = 10;
 
@@ -32,6 +35,7 @@ public abstract class BasePiece : EventTrigger
     {
         pieceManager = newPM;
         isWhite = newIsWhite;
+        hasMoved = false;
 
         rt = GetComponent<RectTransform>();
     }
@@ -182,8 +186,26 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void Move()
     {
+        
         // If there is a piece, remove it
         targetCell.RemovePiece();
+
+        // Handle castle
+        if (currentCell.currentPiece.GetType() == typeof(King) && currentCell.currentPiece.hasMoved == false)
+        {
+            if(targetCell.boardPosition.x == 2)
+            {
+                BasePiece rook = currentCell.board.allCells[0][currentCell.boardPosition.y].currentPiece;
+                rook.targetCell = currentCell.board.allCells[3][currentCell.boardPosition.y];
+                rook.Move();
+            }
+            else if(targetCell.boardPosition.x == 6)
+            {
+                BasePiece rook = currentCell.board.allCells[7][currentCell.boardPosition.y].currentPiece;
+                rook.targetCell = currentCell.board.allCells[5][currentCell.boardPosition.y];
+                rook.Move();
+            }
+        }
 
         currentCell.currentPiece = null;
 
@@ -197,6 +219,8 @@ public abstract class BasePiece : EventTrigger
         {
             pieceManager.enPassantCell.enPassant = null;
             pieceManager.enPassantCell = null;
-        }        
+        }
+
+        hasMoved = true;
     }
 }
