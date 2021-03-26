@@ -29,15 +29,24 @@ public class King : BasePiece
             Cell cellG = currentCell.board.allCells[6][currentCell.boardPosition.y];
             Cell cellH = currentCell.board.allCells[7][currentCell.boardPosition.y];
 
+            // Rook state and b state
+            pieceManager.checkVerificationInProcess = true;
+            CellState stateRookA = cellA.GetState(this);
+            CellState stateRookH = cellH.GetState(this);
+            CellState stateBCell = cellB.GetState(this);
+            pieceManager.checkVerificationInProcess = false;
+
+
+
             // Long castle
-            if(cellA.GetState(this) == CellState.FRIEND && cellA.currentPiece.hasMoved == false && 
-                cellB.GetState(this) == CellState.FREE && cellC.GetState(this) == CellState.FREE &&
+            if (stateRookA == CellState.FRIEND && cellA.currentPiece.hasMoved == false &&
+                stateBCell == CellState.FREE && cellC.GetState(this) == CellState.FREE &&
                  cellD.GetState(this) == CellState.FREE && isCheck == false)
             {
                 highlightedCells.Add(cellC);
             }
             // Short castle
-            if(cellH.GetState(this) == CellState.FRIEND && cellH.currentPiece.hasMoved == false &&
+            if(stateRookH == CellState.FRIEND && cellH.currentPiece.hasMoved == false &&
                 cellF.GetState(this) == CellState.FREE && cellG.GetState(this) == CellState.FREE
                 && isCheck == false)
             {
