@@ -188,10 +188,12 @@ public abstract class BasePiece : EventTrigger
         {
             Move();
             pieceManager.SetTurn(!isWhite);
+            CheckGameOver(!isWhite);
         }
 
         // Hide Highlited
         ClearCellsHighlight();
+
     }
 
     public void Reset()
@@ -259,7 +261,6 @@ public abstract class BasePiece : EventTrigger
         
         pieceManager.checkVerificationInProcess = false;
 
-        CheckGameOver(!isWhite);
     }
 
     public bool isCheckVerif(bool AttakingSideIsWhite)
@@ -333,6 +334,7 @@ public abstract class BasePiece : EventTrigger
                 pieceManager.gameState = GameState.PAT;
             }
             Debug.Log(pieceManager.gameState);
+            pieceManager.ShowResult();
         }
     }
 }

@@ -10,10 +10,21 @@ public class Timer
     private bool timerIsRunning = false;
     private TMP_Text clock;
 
+    [HideInInspector]
+    public bool runOut = false;
+
+    public void Stop()
+    {
+        timerIsRunning = false;
+    }
+
     public void Setup(float timeMax, TMP_Text display)
     {
+        runOut = false;
         timeRemaining = timeMax;
         clock = display;
+
+        DisplayTime(timeRemaining);
     }
 
 
@@ -39,6 +50,10 @@ public class Timer
                 Debug.Log("Time has run out !");
                 timeRemaining = 0;
                 timerIsRunning = false;
+                clock.text = string.Format("0:{0:00}:{1:0}", 0, 0);
+                clock.color = Color.red;
+                timerIsRunning = false;
+                runOut = true;
             }
         }
     }
@@ -48,7 +63,7 @@ public class Timer
         float minutes = Mathf.FloorToInt(timeToDisplay / 60);
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         float tenthOfSecond;
-        if(seconds < 20)
+        if(minutes == 0 && seconds < 20)
         {
             tenthOfSecond = Mathf.FloorToInt( (timeToDisplay % 1) * 10);
             clock.text = string.Format("0:{0:00}:{1:0}", seconds, tenthOfSecond);

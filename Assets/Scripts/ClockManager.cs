@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class ClockManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-
+    
+    [HideInInspector]
+    public bool launched = false;
 
     private Timer clockWhite;
     private Timer clockBlack;
@@ -18,37 +18,62 @@ public class ClockManager : MonoBehaviour
     public GameObject highlightClockW;
     public GameObject highlightClockB;
 
-
+    private PieceManager pm = null;
 
     private bool isWhiteTurn = true;
 
-    void Start()
+    public void Setup(float whiteTime, float blackTime, PieceManager newPm)
     {
-        
+
+        pm = newPm;
+        launched = false;
         clockWhite = new Timer();
         clockBlack = new Timer();
-       
-        clockWhite.Setup(15, displayWhite);
-        clockBlack.Setup(25, displayBlack);
 
-        clockWhite.Start();
-        clockBlack.Start();
-      
+        clockWhite.Setup(whiteTime, displayWhite);
+        clockBlack.Setup(blackTime, displayBlack);
+
         highlightClockW.SetActive(true);
         highlightClockB.SetActive(false);
+    }
 
-        
+    public void StartClocks()
+    {
+        clockWhite.Start();
+        clockBlack.Start();
+        launched = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isWhiteTurn == true) {
-            clockWhite.Update();
-        } else
+        if (launched)
         {
-            clockBlack.Update();
+            if (isWhiteTurn == true)
+            {
+                clockWhite.Update();
+            }
+            else
+            {
+                clockBlack.Update();
+            }
         }
+        if (clockBlack.runOut)
+        {
+            pm.gameState = GameState.WHITE_WIN;
+            pm.ShowResult();
+        }
+        if (clockWhite.runOut)
+        {
+            pm.gameState = GameState.BLACK_WIN;
+            pm.ShowResult();
+        }
+    }
+
+    public void StopClocks()
+    {
+        clockWhite.Stop();
+        clockBlack.Stop();        
     }
 
     public void changeTurn()

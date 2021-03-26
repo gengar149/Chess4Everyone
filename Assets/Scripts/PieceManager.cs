@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public enum GameState
 {
@@ -27,6 +28,7 @@ public class PieceManager : MonoBehaviour
     public ClockManager clockManager;
 
     public GameObject piecePrefab;
+    public TMP_Text result;
 
     private List<BasePiece> whitePieces = null;
     private List<BasePiece> blackPieces = null;
@@ -83,18 +85,24 @@ public class PieceManager : MonoBehaviour
     {
         gameState = GameState.INGAME;
 
+        result.text = "";
+
         isKingAlive = true;
 
-    whitePieces = CreatePieces(true, board);
+        whitePieces = CreatePieces(true, board);
         blackPieces = CreatePieces(false, board);
 
         PlacePieces("2", "1", whitePieces, board);
         PlacePieces("7", "8", blackPieces, board);
 
         SetColor(blackPieces, Color.grey);
-        SetTurn(true);
+
+        SetInteractive(whitePieces, true);
+        SetInteractive(blackPieces, false);
 
         enPassantCell = null;
+
+        clockManager.Setup(60, 120, this);
     }
 
 
@@ -164,6 +172,10 @@ public class PieceManager : MonoBehaviour
         SetInteractive(whitePieces, isWhiteTurn);
         SetInteractive(blackPieces, !isWhiteTurn);
 
+        if (clockManager.launched == false)
+        {
+            clockManager.StartClocks();
+        }
         clockManager.setTurn(isWhiteTurn);
     }
 
@@ -215,6 +227,35 @@ public class PieceManager : MonoBehaviour
             return whiteKing;
         else
             return blackKing;
+    }
+
+    public void ShowResult()
+    {
+        SetInteractive(whitePieces, false);
+        SetInteractive(blackPieces, false);
+
+        clockManager.StopClocks();
+
+        clockManager.highlightClockW.SetActive(false);
+        clockManager.highlightClockB.SetActive(false);
+
+        if (gameState == GameState.BLACK_WIN)
+        {
+            result.text = "Victoire des Noirs";
+            clockManager.highlightClockB.SetActive(true);
+            clockManager.highlightClockB.GetComponent<Image>().color = new Color(1, (float)0.6816, 0, 1);
+        }
+        if (gameState == GameState.WHITE_WIN)
+        {
+            result.text = "Victoire des Blancs";
+            clockManager.highlightClockW.SetActive(true);
+            clockManager.highlightClockW.GetComponent<Image>().color = new Color(1, (float)0.6816, 0, 1);
+
+        }
+        if (gameState == GameState.PAT)
+        {
+            result.text = "PAT !";            
+        }
     }
 }
 
