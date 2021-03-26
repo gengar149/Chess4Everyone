@@ -19,7 +19,7 @@ public class King : BasePiece
     protected override void CheckPathing()
     {
         base.CheckPathing();
-        if(hasMoved == false)
+        if(hasMoved == false && !pieceManager.checkVerificationInProcess)
         {
             Cell cellA = currentCell.board.allCells[0][currentCell.boardPosition.y];
             Cell cellB = currentCell.board.allCells[1][currentCell.boardPosition.y];

@@ -208,7 +208,12 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void Move()
     {
-        
+        // Disable check
+        if (pieceManager.getKing(isWhite).isCheck)
+        {
+            pieceManager.getKing(isWhite).setCheck(false);
+        }
+
         // If there is a piece, remove it
         targetCell.RemovePiece();
 
@@ -251,11 +256,10 @@ public abstract class BasePiece : EventTrigger
         {
             pieceManager.getKing(!isWhite).setCheck(true);
         }
-        if (pieceManager.getKing(isWhite).isCheck)
-        {
-            pieceManager.getKing(isWhite).setCheck(false);
-        }
+        
         pieceManager.checkVerificationInProcess = false;
+
+        CheckGameOver(!isWhite);
     }
 
     public bool isCheckVerif(bool AttakingSideIsWhite)
@@ -265,7 +269,7 @@ public abstract class BasePiece : EventTrigger
             foreach(Cell boardCell in row)
             {
                 BasePiece pieceBoard = boardCell.currentPiece;
-                if(pieceBoard != null)
+                if(pieceBoard != null && pieceBoard.isWhite == AttakingSideIsWhite)
                 {
                     King targetKing = pieceManager.getKing(!AttakingSideIsWhite);
 
@@ -289,5 +293,46 @@ public abstract class BasePiece : EventTrigger
     public void ClearAttackedCell()
     {
         attackedCells.Clear();
+    }
+
+    public bool PossibleMove(bool isWhite)
+    {
+        foreach (List<Cell> row in currentCell.board.allCells)
+        {
+            foreach (Cell boardCell in row)
+            {
+                BasePiece piece = boardCell.currentPiece;
+                if (piece != null && piece.isWhite == isWhite)
+                {
+                    piece.CheckPathing();
+                    if (piece.highlightedCells.Count > 0)
+                    {
+                        piece.highlightedCells.Clear();
+                        return true;
+                    }
+                    piece.highlightedCells.Clear();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void CheckGameOver(bool isWhite)
+    {
+        if (!PossibleMove(isWhite))
+        {
+            if (pieceManager.getKing(isWhite).isCheck)
+            {
+                if (isWhite)
+                    pieceManager.gameState = GameState.BLACK_WIN;
+                else
+                    pieceManager.gameState = GameState.WHITE_WIN;
+            }
+            else
+            {
+                pieceManager.gameState = GameState.PAT;
+            }
+            Debug.Log(pieceManager.gameState);
+        }
     }
 }

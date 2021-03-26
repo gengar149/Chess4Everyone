@@ -4,10 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum GameState
+{
+    INGAME,
+    WHITE_WIN,
+    BLACK_WIN,
+    PAT,
+    NULLE
+}
+
 public class PieceManager : MonoBehaviour
 {
     [HideInInspector]
     public bool isKingAlive;
+
+    [HideInInspector]
+    public GameState gameState;
 
     [HideInInspector]
     public bool isWhiteTurn;
@@ -69,6 +81,8 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        gameState = GameState.INGAME;
+
         isKingAlive = true;
 
     whitePieces = CreatePieces(true, board);
@@ -184,9 +198,11 @@ public class PieceManager : MonoBehaviour
         queen.PlaceInit(promotionCell);
         if (pawn.isWhite)
         {
+            whitePieces.Remove(pawn);
             whitePieces.Add(queen);
         } else
         {
+            blackPieces.Remove(pawn);
             blackPieces.Add(queen);
             queen.GetComponent<Image>().color = Color.grey;
         }
