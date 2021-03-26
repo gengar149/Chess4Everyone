@@ -48,16 +48,19 @@ public class Pawn : BasePiece
 
         if(cellstate == targetState)
         {
-            // Add to list
-            if (cellstate == CellState.ENEMY || cellstate == CellState.PASSANT)
+            if (!pieceManager.checkVerificationInProcess)
             {
-                target.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
+                // Add to list
+                if (cellstate == CellState.ENEMY || cellstate == CellState.PASSANT)
+                {
+                    target.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
+                }
+                else
+                {
+                    target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
+                }
+                //highlightedCells.Add(target);
             }
-            else
-            {
-                target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
-            }
-            //highlightedCells.Add(target);
             addPossibleCell(target);
             return true;
         }

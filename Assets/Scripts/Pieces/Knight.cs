@@ -66,15 +66,18 @@ public class Knight : BasePiece
 
         if(targetState != CellState.FRIEND && targetState != CellState.CHECK)
         {
-            // Add to list
-            if (targetState == CellState.ENEMY)
+            if (!pieceManager.checkVerificationInProcess)
             {
-                target.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
-            }
-            else
-            {
-                target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
-            }
+                // Add to list
+                if (targetState == CellState.ENEMY)
+                {
+                    target.outlineImage.GetComponent<Image>().color = new Color(1, 0, 0, (float)0.5);
+                }
+                else
+                {
+                    target.outlineImage.GetComponent<Image>().color = new Color(0, 1, 0, (float)0.5);
+                }
+            }            
             //highlightedCells.Add(target);
             addPossibleCell(target);
         }        
