@@ -19,7 +19,7 @@ public class King : BasePiece
     protected override void CheckPathing()
     {
         base.CheckPathing();
-        if(hasMoved == false)
+        if(hasMoved == false && pieceManager.checkVerificationInProcess == false)
         {
             Cell cellA = currentCell.board.allCells[0][currentCell.boardPosition.y];
             Cell cellB = currentCell.board.allCells[1][currentCell.boardPosition.y];
@@ -29,14 +29,17 @@ public class King : BasePiece
             Cell cellG = currentCell.board.allCells[6][currentCell.boardPosition.y];
             Cell cellH = currentCell.board.allCells[7][currentCell.boardPosition.y];
 
+            // Long castle
             if(cellA.GetState(this) == CellState.FRIEND && cellA.currentPiece.hasMoved == false && 
                 cellB.GetState(this) == CellState.FREE && cellC.GetState(this) == CellState.FREE &&
-                 cellD.GetState(this) == CellState.FREE)
+                 cellD.GetState(this) == CellState.FREE && isCheck == false)
             {
                 highlightedCells.Add(cellC);
             }
+            // Short castle
             if(cellH.GetState(this) == CellState.FRIEND && cellH.currentPiece.hasMoved == false &&
-                cellF.GetState(this) == CellState.FREE && cellG.GetState(this) == CellState.FREE)
+                cellF.GetState(this) == CellState.FREE && cellG.GetState(this) == CellState.FREE
+                && isCheck == false)
             {
                 highlightedCells.Add(cellG);
             }
