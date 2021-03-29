@@ -19,6 +19,8 @@ public class PieceManager : MonoBehaviour
     [HideInInspector]
     public bool isKingAlive;
 
+    private Board chessBoard;
+
     [HideInInspector]
     public GameState gameState;
 
@@ -83,6 +85,7 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        chessBoard = board;
         gameState = GameState.INGAME;
 
         result.text = "";
@@ -102,9 +105,44 @@ public class PieceManager : MonoBehaviour
 
         enPassantCell = null;
 
-        clockManager.Setup(60, 120, this);
+        isWhiteTurn = true;
+
+        clockManager.Setup(60, 60, this);
     }
 
+    public void ResetGame()
+    {
+        gameState = GameState.INGAME;
+
+        result.text = "";
+
+        isWhiteTurn = true;
+
+        foreach (List<Cell> row in chessBoard.allCells)
+        {
+            foreach (Cell boardCell in row)
+            {
+                if(boardCell.currentPiece != null)
+                {
+                    boardCell.currentPiece.hasMoved = false;
+                    boardCell.currentPiece = null;
+                }
+                boardCell.enPassant = null;
+            }
+        }
+
+        PlacePieces("2", "1", whitePieces, chessBoard);
+        PlacePieces("7", "8", blackPieces, chessBoard);
+
+        SetInteractive(whitePieces, true);
+        SetInteractive(blackPieces, false);
+
+        enPassantCell = null;
+
+        clockManager.Setup(60, 60, this);
+
+        checkVerificationInProcess = false;
+    }
 
     private List<BasePiece> CreatePieces(bool isWhite, Board board)
     {

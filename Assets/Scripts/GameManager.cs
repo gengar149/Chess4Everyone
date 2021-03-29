@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
 
     public void Reload()
     {
-        SceneManager.LoadScene(1); // Menu
+        // SceneManager.LoadScene(1); // Menu
+        pieceManager.ResetGame();
     }
 }
 

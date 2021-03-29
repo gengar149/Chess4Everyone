@@ -6,15 +6,13 @@ using UnityEngine.UI;
 
 public class Pawn : BasePiece
 {
-    private bool isFirstMove = true;
-
     public override void Setup(bool newIsWhite, PieceManager newPM)
     {
         base.Setup(newIsWhite, newPM);
         movement = isWhite ? new Vector3Int(0, 1, 1) : new Vector3Int(0, -1, -1);
         GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/pawn");
 
-        isFirstMove = true;
+        hasMoved = false;
     }
 
     protected override void Move()
@@ -25,7 +23,7 @@ public class Pawn : BasePiece
 
         base.Move();
 		
-        if (isFirstMove)
+        if (!hasMoved)
         {
             if (targ.boardPosition.y == beforeMove.boardPosition.y + 2 * movement.y)
             {
@@ -33,7 +31,7 @@ public class Pawn : BasePiece
                 enPassantCell.enPassant = this;
                 pieceManager.enPassantCell = enPassantCell;
             }
-            isFirstMove = false;
+            hasMoved = true;
         }
         if(currentCell.boardPosition.y == 0 || currentCell.boardPosition.y == 7)
         {
@@ -87,7 +85,7 @@ public class Pawn : BasePiece
             // forward
             if (MatchesState(currentCell.board.allCells[currentX][currentY + movement.y], CellState.FREE))
             {
-                if (isFirstMove)
+                if (!hasMoved)
                 {
                     MatchesState(currentCell.board.allCells[currentX][currentY + movement.y * 2], CellState.FREE);
                 }
