@@ -23,6 +23,7 @@ public class Timer
         runOut = false;
         timeRemaining = timeMax;
         clock = display;
+        clock.color = Color.black;
 
         DisplayTime(timeRemaining);
     }

@@ -122,7 +122,8 @@ public class PieceManager : MonoBehaviour
         {
             foreach (Cell boardCell in row)
             {
-                if(boardCell.currentPiece != null)
+                boardCell.outlineImage.enabled = false;
+                if (boardCell.currentPiece != null)
                 {
                     boardCell.currentPiece.hasMoved = false;
                     boardCell.currentPiece = null;

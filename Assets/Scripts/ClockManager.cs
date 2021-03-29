@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClockManager : MonoBehaviour
 {
@@ -35,6 +36,11 @@ public class ClockManager : MonoBehaviour
 
         highlightClockW.SetActive(true);
         highlightClockB.SetActive(false);
+
+        highlightClockW.GetComponent<Image>().color = new Color((float)0.36, (float)0.68, (float)0.27, 1);
+        highlightClockB.GetComponent<Image>().color = new Color((float)0.36, (float)0.68, (float)0.27,1);
+
+
     }
 
     public void StartClocks()
