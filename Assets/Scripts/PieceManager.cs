@@ -30,6 +30,9 @@ public class PieceManager : MonoBehaviour
     [HideInInspector]
     public bool isWhiteTurn;
 
+    [HideInInspector]
+    public new AudioSource audio;
+
     public ClockManager clockManager;
 
     public GameObject piecePrefab;
@@ -37,6 +40,9 @@ public class PieceManager : MonoBehaviour
 
     private List<BasePiece> whitePieces = null;
     private List<BasePiece> blackPieces = null;
+
+    public static float blackTime = 5;
+    public static float whiteTime = 60;
 
     [HideInInspector]
     public Cell enPassantCell = null;
@@ -88,6 +94,8 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        audio = gameObject.AddComponent<AudioSource>();
+
         chessBoard = board;
         gameState = GameState.INGAME;
 
@@ -95,8 +103,8 @@ public class PieceManager : MonoBehaviour
 
         isKingAlive = true;
 
-        whitePieces = CreatePieces(true, board);
-        blackPieces = CreatePieces(false, board);
+        whitePieces = CreatePieces(true, chessBoard);
+        blackPieces = CreatePieces(false, chessBoard);
 
         PlacePieces("2", "1", whitePieces, board);
         PlacePieces("7", "8", blackPieces, board);
@@ -110,7 +118,9 @@ public class PieceManager : MonoBehaviour
 
         isWhiteTurn = true;
 
-        clockManager.Setup(60, 60, this);
+        clockManager.Setup(whiteTime, blackTime, this);
+
+        checkVerificationInProcess = false;
     }
 
     public void ResetGame()
@@ -128,13 +138,20 @@ public class PieceManager : MonoBehaviour
                 boardCell.outlineImage.enabled = false;
                 if (boardCell.currentPiece != null)
                 {
-                    boardCell.currentPiece.hasMoved = false;
-                    boardCell.currentPiece = null;
+                    boardCell.currentPiece.Kill();
                 }
                 boardCell.enPassant = null;
             }
         }
 
+        whitePieces.Clear();
+        blackPieces.Clear();
+
+        whitePieces = CreatePieces(true, chessBoard);
+        blackPieces = CreatePieces(false, chessBoard);
+
+       
+            
         PlacePieces("2", "1", whitePieces, chessBoard);
         PlacePieces("7", "8", blackPieces, chessBoard);
 
@@ -142,8 +159,9 @@ public class PieceManager : MonoBehaviour
         SetInteractive(blackPieces, false);
 
         enPassantCell = null;
+        isKingAlive = true;
 
-        clockManager.Setup(60, 60, this);
+        clockManager.Setup(whiteTime, blackTime, this);
 
         checkVerificationInProcess = false;
     }
@@ -202,6 +220,8 @@ public class PieceManager : MonoBehaviour
     {
         foreach(BasePiece piece in pieces)
         {
+            if (piece.inDrag)
+                piece.OnEndDrag(null);
             piece.enabled = state;
         }
     }
@@ -272,7 +292,9 @@ public class PieceManager : MonoBehaviour
     }
 
     public void ShowResult()
-    {
+    {        
+        audio.PlayOneShot((AudioClip)Resources.Load("Sounds/basic/end"));
+
         SetInteractive(whitePieces, false);
         SetInteractive(blackPieces, false);
 
@@ -281,6 +303,14 @@ public class PieceManager : MonoBehaviour
         clockManager.highlightClockW.SetActive(false);
         clockManager.highlightClockB.SetActive(false);
 
+        result.enabled = false;
+
+        StartCoroutine(showResultCoroutine());
+    }
+
+    private IEnumerator showResultCoroutine()
+    {
+        yield return new WaitForSeconds((float)2.1);
         if (gameState == GameState.BLACK_WIN)
         {
             result.text = "Victoire des Noirs";
@@ -296,8 +326,9 @@ public class PieceManager : MonoBehaviour
         }
         if (gameState == GameState.PAT)
         {
-            result.text = "PAT !";            
+            result.text = "PAT !";
         }
+        result.enabled = true;
     }
 
     public void ApplyTheme(Theme newTheme)

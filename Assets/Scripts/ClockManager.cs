@@ -63,17 +63,19 @@ public class ClockManager : MonoBehaviour
             {
                 clockBlack.Update();
             }
-        }
-        if (clockBlack.runOut)
-        {
-            pm.gameState = GameState.WHITE_WIN;
-            pm.ShowResult();
-        }
-        if (clockWhite.runOut)
-        {
-            pm.gameState = GameState.BLACK_WIN;
-            pm.ShowResult();
-        }
+            if (clockBlack.runOut)
+            {
+                pm.gameState = GameState.WHITE_WIN;
+                pm.ShowResult();
+                launched = false;
+            }
+            if (clockWhite.runOut)
+            {
+                pm.gameState = GameState.BLACK_WIN;
+                pm.ShowResult();
+                launched = false;
+            }
+        }       
     }
 
     public void StopClocks()

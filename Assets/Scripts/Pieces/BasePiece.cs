@@ -32,6 +32,8 @@ public abstract class BasePiece : EventTrigger
     /// </summary>
     protected Cell targetCell = null;
 
+    public bool inDrag = false;
+
     public PieceManager GetPieceManager()
     {
         return pieceManager;
@@ -41,11 +43,27 @@ public abstract class BasePiece : EventTrigger
 
     public virtual void Setup(bool newIsWhite, PieceManager newPM)
     {
+        inDrag = false;
         pieceManager = newPM;
         isWhite = newIsWhite;
         hasMoved = false;
 
         rt = GetComponent<RectTransform>();
+
+        if (pieceManager.theme == null)
+        {
+            if(isWhite)
+                GetComponent<Image>().color = Color.white;
+            else
+                GetComponent<Image>().color = Color.grey;
+        }
+        else
+        {
+            if (isWhite)
+                GetComponent<Image>().color = pieceManager.theme.whitePiece;
+            else
+                GetComponent<Image>().color = pieceManager.theme.blackPiece;
+        }
     }
 
     public void PlaceInit(Cell newCell)
@@ -146,6 +164,8 @@ public abstract class BasePiece : EventTrigger
     {
         base.OnBeginDrag(eventData);
 
+        inDrag = true;
+
         // Test for cells
         CheckPathing();
 
@@ -166,7 +186,9 @@ public abstract class BasePiece : EventTrigger
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        base.OnEndDrag(eventData);        
+        base.OnEndDrag(eventData);
+
+        inDrag = false;
 
         // Get target cell
         targetCell = null;
@@ -180,15 +202,13 @@ public abstract class BasePiece : EventTrigger
         }
 
         // Return to his original position
-        if (!targetCell)
+        if (!targetCell || pieceManager.gameState != GameState.INGAME)
         {
             transform.position = currentCell.transform.position; // gameObject
         }
         else
         {
-            Move();
-            pieceManager.SetTurn(!isWhite);
-            CheckGameOver(!isWhite);
+            Move();            
         }
 
         // Hide Highlited
@@ -210,6 +230,17 @@ public abstract class BasePiece : EventTrigger
 
     protected virtual void Move()
     {
+        // sounds
+        AudioClip clip = null;
+        if (targetCell.currentPiece == null)
+        {
+            clip = (AudioClip)Resources.Load("Sounds/basic/move");
+        }
+        else
+        {
+            clip = (AudioClip)Resources.Load("Sounds/basic/pick");
+        }
+
         // Disable check
         if (pieceManager.getKing(isWhite).isCheck)
         {
@@ -257,10 +288,19 @@ public abstract class BasePiece : EventTrigger
         if (isCheckVerif(isWhite))
         {
             pieceManager.getKing(!isWhite).setCheck(true);
+            clip = (AudioClip)Resources.Load("Sounds/basic/check");
         }
         
         pieceManager.checkVerificationInProcess = false;
 
+        pieceManager.SetTurn(!isWhite);
+        CheckGameOver(!isWhite);
+
+        // Sounds
+        if (pieceManager.gameState != GameState.INGAME)
+            clip = null;
+        if (clip != null)
+            pieceManager.audio.PlayOneShot(clip);
     }
 
     public bool isCheckVerif(bool AttakingSideIsWhite)
