@@ -10,6 +10,8 @@ public class Bishop : BasePiece
         base.Setup(newIsWhite, newPM);
 
         movement = new Vector3Int(0, 0, 7);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/bishop");
+        if(pieceManager.theme == null)
+            GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/basic/bishop");
+        else GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + pieceManager.theme.spriteFolder + "/bishop");
     }
 }

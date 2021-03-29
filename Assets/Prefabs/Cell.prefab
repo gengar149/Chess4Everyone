@@ -130,6 +130,7 @@ MonoBehaviour:
   board: {fileID: 0}
   rectTransform: {fileID: 0}
   currentPiece: {fileID: 0}
+  enPassant: {fileID: 0}
 --- !u!222 &4648180544598485410
 CanvasRenderer:
   m_ObjectHideFlags: 0

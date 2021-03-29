@@ -13,7 +13,9 @@ public class King : BasePiece
         base.Setup(newIsWhite, newPM);
 		isCheck = false;
         movement = new Vector3Int(1, 1, 1);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/king");
+        if (pieceManager.theme == null)
+            GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/basic/king");
+        else GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + pieceManager.theme.spriteFolder + "/king");
     }
 
     protected override void CheckPathing()

@@ -10,6 +10,8 @@ public class Queen : BasePiece
         base.Setup(newIsWhite, newPM);
 
         movement = new Vector3Int(7, 7, 7);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/queen");
+        if (pieceManager.theme == null)
+            GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/basic/queen");
+        else GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + pieceManager.theme.spriteFolder + "/queen");
     }
 }

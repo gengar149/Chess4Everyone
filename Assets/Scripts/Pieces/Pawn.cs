@@ -10,7 +10,9 @@ public class Pawn : BasePiece
     {
         base.Setup(newIsWhite, newPM);
         movement = isWhite ? new Vector3Int(0, 1, 1) : new Vector3Int(0, -1, -1);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/pawn");
+        if (pieceManager.theme == null)
+            GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/basic/pawn");
+        else GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + pieceManager.theme.spriteFolder + "/pawn");
 
         hasMoved = false;
     }

@@ -11,7 +11,9 @@ public class Knight : BasePiece
         base.Setup(newIsWhite, newPM);
 
         movement = new Vector3Int(1, 1, 1);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/knight");
+        if (pieceManager.theme == null)
+            GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/basic/knight");
+        else GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + pieceManager.theme.spriteFolder + "/knight");
     }
 
     private void CreateCellPath(int yDirection)

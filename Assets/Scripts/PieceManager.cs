@@ -25,6 +25,9 @@ public class PieceManager : MonoBehaviour
     public GameState gameState;
 
     [HideInInspector]
+    public Theme theme = null;
+
+    [HideInInspector]
     public bool isWhiteTurn;
 
     public ClockManager clockManager;
@@ -294,6 +297,56 @@ public class PieceManager : MonoBehaviour
         if (gameState == GameState.PAT)
         {
             result.text = "PAT !";            
+        }
+    }
+
+    public void ApplyTheme(Theme newTheme)
+    {
+        theme = newTheme;
+        for (int x = 0; x < chessBoard.Column; x++)
+        {
+            for (int y = 0; y < chessBoard.Row; y++)
+            {
+                Cell cell = chessBoard.allCells[x][y];
+                cell.GetComponent<Image>().color = theme.blackCell;
+                cell.GetComponent<Image>().sprite = theme.textureSprite;
+
+                if (cell.currentPiece != null)
+                {
+                    if (cell.currentPiece.isWhite)
+                        cell.currentPiece.GetComponent<Image>().color = theme.whitePiece;
+                    else
+                        cell.currentPiece.GetComponent<Image>().color = theme.blackPiece;
+                    if(cell.currentPiece.GetType() == typeof(King))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/king");
+                    if (cell.currentPiece.GetType() == typeof(Pawn))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/pawn");
+                    if (cell.currentPiece.GetType() == typeof(Queen))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/queen");
+                    if (cell.currentPiece.GetType() == typeof(Bishop))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/bishop");
+                    if (cell.currentPiece.GetType() == typeof(Knight))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/knight");
+                    if (cell.currentPiece.GetType() == typeof(Rook))
+                        cell.currentPiece.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + theme.spriteFolder + "/rook");
+                }
+            }
+        }
+
+        // Color white cell
+        for (int x = 0; x < chessBoard.Column; x += 2)
+        {
+            for (int y = 0; y < chessBoard.Row; y++)
+            {
+                // Offset for every other line
+                int offset = (y % 2 != 0) ? 0 : 1;
+                int finalX = x + offset;
+
+                // Color
+                //Color col = new Color32(230, 220, 187, 255);
+                Image im = chessBoard.allCells[finalX][y].GetComponent<Image>();
+                im.color = theme.whiteCell;
+            }
         }
     }
 }
