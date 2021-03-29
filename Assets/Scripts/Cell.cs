@@ -10,7 +10,9 @@ public enum CellState
     ENEMY,
     FREE,
     PASSANT, 
-    CHECK
+    CHECK,
+    CHECK_ENEMY,
+    CHECK_FRIEND
 }
 
 public class Cell : MonoBehaviour
@@ -73,8 +75,21 @@ public class Cell : MonoBehaviour
                 currentPiece = originalCurrentPiece;
                 checkingPiece.currentCell = originalCurrentCell;
                 checkingPiece.currentCell.currentPiece = checkingPiece;
-                
 
+                //other
+                if (currentPiece != null )
+                {
+                    // if friend
+                    if (checkingPiece.isWhite == currentPiece.isWhite && checkingPiece.GetPieceManager().getKing(checkingPiece.isWhite).isCheck)
+                    {
+                        return CellState.CHECK_FRIEND;
+                    }
+                    // if enemy
+                    else
+                    {
+                        return CellState.CHECK_ENEMY;
+                    }
+                }
                 return CellState.CHECK;
             }
 

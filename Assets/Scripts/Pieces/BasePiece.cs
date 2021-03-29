@@ -95,7 +95,7 @@ public abstract class BasePiece : EventTrigger
             Cell targeted = currentCell.board.allCells[currentX][currentY];
 
             CellState state = targeted.GetState(this);
-            if (state != CellState.FRIEND && state != CellState.CHECK)
+            if (state != CellState.FRIEND && state != CellState.CHECK &&  state != CellState.CHECK_ENEMY && state != CellState.CHECK_FRIEND)
             {
                 if (!pieceManager.checkVerificationInProcess)
                 {
@@ -113,7 +113,7 @@ public abstract class BasePiece : EventTrigger
 
                 addPossibleCell(targeted);
             }
-            if (state != CellState.FREE)
+            if (state == CellState.ENEMY || state == CellState.FRIEND || state == CellState.CHECK_ENEMY || state == CellState.CHECK_FRIEND)
                 break;
         }
     }

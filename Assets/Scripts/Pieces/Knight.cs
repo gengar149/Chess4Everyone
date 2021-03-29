@@ -66,7 +66,7 @@ public class Knight : BasePiece
     {
         CellState targetState = target.GetState(this);
 
-        if(targetState != CellState.FRIEND && targetState != CellState.CHECK)
+        if(targetState != CellState.FRIEND && targetState != CellState.CHECK && targetState != CellState.CHECK_ENEMY && targetState != CellState.CHECK_FRIEND)
         {
             if (!pieceManager.checkVerificationInProcess)
             {

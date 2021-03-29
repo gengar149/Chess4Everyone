@@ -41,7 +41,7 @@ public class PieceManager : MonoBehaviour
     private List<BasePiece> whitePieces = null;
     private List<BasePiece> blackPieces = null;
 
-    public static float blackTime = 5;
+    public static float blackTime = 60;
     public static float whiteTime = 60;
 
     [HideInInspector]

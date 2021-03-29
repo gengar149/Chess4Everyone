@@ -64,6 +64,8 @@ public class Pawn : BasePiece
             addPossibleCell(target);
             return true;
         }
+        if (cellstate == CellState.FREE || cellstate == CellState.CHECK)
+            return true;
         return false;
     }
 
