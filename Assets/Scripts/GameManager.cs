@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     public void BackMenu()
     {
+        pieceManager.stockfish.Close();
         SceneManager.LoadScene(0); // Menu
     }
 

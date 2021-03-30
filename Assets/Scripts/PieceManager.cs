@@ -44,8 +44,15 @@ public class PieceManager : MonoBehaviour
     public static float blackTime = 60;
     public static float whiteTime = 60;
 
+    public static bool IAmode = true;
+    public static bool isIAWithe = false;
+    public IA stockfish = null;
+    [HideInInspector]
+    public bool IATurn = false;
+
     [HideInInspector]
     public Cell enPassantCell = null;
+   
 
     [HideInInspector]
     public King whiteKing = null;
@@ -68,7 +75,7 @@ public class PieceManager : MonoBehaviour
         {"Q", typeof(Queen)}
     };
 
-    private Dictionary<string, int> coordA = new Dictionary<string, int>()
+    public Dictionary<string, int> coordA = new Dictionary<string, int>()
     {
         {"a", 0},
         {"b", 1},
@@ -80,7 +87,7 @@ public class PieceManager : MonoBehaviour
         {"h", 7}
     };
 
-    private Dictionary<string, int> coordB = new Dictionary<string, int>()
+    public Dictionary<string, int> coordB = new Dictionary<string, int>()
     {
         {"1", 0},
         {"2", 1},
@@ -92,8 +99,34 @@ public class PieceManager : MonoBehaviour
         {"8", 7}
     };
 
+    public Dictionary<int, string> posA = new Dictionary<int, string>()
+    {
+        {0, "a"},
+        {1, "b"},
+        {2, "c"},
+        {3, "d"},
+        {4, "e"},
+        {5, "f"},
+        {6, "g"},
+        {7, "h"},
+    };
+
+    public Dictionary<int, string> posB = new Dictionary<int, string>()
+    {
+        {0, "1"},
+        {1, "2"},
+        {2, "3"},
+        {3, "4"},
+        {4, "5"},
+        {5, "6"},
+        {6, "7"},
+        {7, "8"},
+    };
+
     public void Setup(Board board)
     {
+        stockfish.Setup();
+
         audio = gameObject.AddComponent<AudioSource>();
 
         chessBoard = board;
@@ -109,8 +142,6 @@ public class PieceManager : MonoBehaviour
         PlacePieces("2", "1", whitePieces, board);
         PlacePieces("7", "8", blackPieces, board);
 
-        SetColor(blackPieces, Color.grey);
-
         SetInteractive(whitePieces, true);
         SetInteractive(blackPieces, false);
 
@@ -125,6 +156,9 @@ public class PieceManager : MonoBehaviour
 
     public void ResetGame()
     {
+        stockfish.Close();
+        stockfish.Setup();
+
         gameState = GameState.INGAME;
 
         result.text = "";
@@ -228,48 +262,86 @@ public class PieceManager : MonoBehaviour
 
     public void SetTurn(bool isWhiteTurn)
     {
-        if (isKingAlive == false)
-            return;
-
-        SetInteractive(whitePieces, isWhiteTurn);
-        SetInteractive(blackPieces, !isWhiteTurn);
-
-        if (clockManager.launched == false)
+        if (IAmode)
         {
-            clockManager.StartClocks();
+            SetInteractive(whitePieces, false);
+            SetInteractive(blackPieces, false);
+            StartCoroutine(showIAMoveCoroutine());            
         }
-        clockManager.setTurn(isWhiteTurn);
+        else
+        {
+            if (isKingAlive == false)
+                return;
+
+            SetInteractive(whitePieces, isWhiteTurn);
+            SetInteractive(blackPieces, !isWhiteTurn);
+
+            if (clockManager.launched == false)
+            {
+                clockManager.StartClocks();
+            }
+            clockManager.setTurn(isWhiteTurn);
+        }        
+    }
+    private IEnumerator showIAMoveCoroutine()
+    {
+        
+        IATurn = true;
+        string best = stockfish.GetBestMove();
+        yield return new WaitForSeconds((float)2);
+        
+        string depA = best.Substring(0, 1);
+        string depB = best.Substring(1, 1);
+        string arrA = best.Substring(2, 1);
+        string arrB = best.Substring(3, 1);
+
+        
+
+        Cell dep = chessBoard.allCells[coordA[depA]][coordB[depB]];
+        Cell targ = chessBoard.allCells[coordA[arrA]][coordB[arrB]];
+
+        // If promotion
+        if(dep.currentPiece.GetType() == typeof(Pawn) && (coordB[arrB] == 0 || coordB[arrB] == 7))
+        {
+            best += "q";
+        }
+
+        Debug.Log(best);
+
+        stockfish.setIAmove(best);
+
+        dep.currentPiece.TargetCell = targ;
+        dep.currentPiece.Move();
+        IATurn = false;
+
+        SetInteractive(whitePieces, true);
     }
 
-    public void SetColor(List<BasePiece> pieces, Color col)
+    public void PawnPromotion(Pawn pawn, Cell BeforeCell)
     {
-        foreach(BasePiece piece in pieces)
-        {
-            piece.GetComponent<Image>().color = col;
-        }
-    }
-
-    public void PawnPromotion(Pawn pawn, Cell promotionCell)
-    {
-        promotionCell.RemovePiece();
+        pawn.currentCell.RemovePiece();
         GameObject newPieceObject = Instantiate(piecePrefab);
         newPieceObject.transform.SetParent(transform);
 
         newPieceObject.transform.localScale = new Vector3(1, 1, 1);
         newPieceObject.transform.localRotation = Quaternion.identity;
 
-        float board_width = promotionCell.board.GetComponent<RectTransform>().rect.width;
-        float board_height = promotionCell.board.GetComponent<RectTransform>().rect.height;
+        float board_width = BeforeCell.board.GetComponent<RectTransform>().rect.width;
+        float board_height = BeforeCell.board.GetComponent<RectTransform>().rect.height;
 
-        float piece_width = board_width / promotionCell.board.Column - BasePiece.CellPadding;
-        float piece_height = board_height / promotionCell.board.Row - BasePiece.CellPadding;
+        float piece_width = board_width / BeforeCell.board.Column - BasePiece.CellPadding;
+        float piece_height = board_height / BeforeCell.board.Row - BasePiece.CellPadding;
         newPieceObject.GetComponent<RectTransform>().sizeDelta = new Vector2(piece_width, piece_height);
 
         Queen queen = (Queen)newPieceObject.AddComponent(typeof(Queen));
         //base.pieceManager.pieceList.Add(newPiece);
 
         queen.Setup(pawn.isWhite, this);
-        queen.PlaceInit(promotionCell);
+        //queen.PlaceInit(promotionCell);
+        queen.TargetCell = pawn.currentCell;
+        queen.currentCell = BeforeCell;
+        queen.currentCell.currentPiece = queen;
+        queen.Move();
         if (pawn.isWhite)
         {
             whitePieces.Remove(pawn);
@@ -278,9 +350,8 @@ public class PieceManager : MonoBehaviour
         {
             blackPieces.Remove(pawn);
             blackPieces.Add(queen);
-            queen.GetComponent<Image>().color = Color.grey;
         }
-        queen.gameObject.SetActive(true);
+        queen.gameObject.SetActive(true);        
     }
 
     public King getKing(bool isWhite)

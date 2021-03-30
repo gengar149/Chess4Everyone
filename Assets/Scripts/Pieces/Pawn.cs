@@ -17,10 +17,10 @@ public class Pawn : BasePiece
         hasMoved = false;
     }
 
-    protected override void Move()
+    public override void Move()
     {
         // En passant
-        Cell targ = targetCell;
+        Cell targ = TargetCell;
         Cell beforeMove = currentCell;
 
         base.Move();
@@ -37,7 +37,7 @@ public class Pawn : BasePiece
         }
         if(currentCell.boardPosition.y == 0 || currentCell.boardPosition.y == 7)
         {
-            pieceManager.PawnPromotion(this, currentCell);
+            pieceManager.PawnPromotion(this, beforeMove);
         }
 
     }

@@ -10,7 +10,7 @@ public abstract class BasePiece : EventTrigger
     [HideInInspector]
     public bool isWhite;
 
-    public bool hasMoved;
+    public bool hasMoved = false;
 
     [HideInInspector]
     static int cellPadding = 10;
@@ -30,7 +30,7 @@ public abstract class BasePiece : EventTrigger
     /// <summary>
     /// Cellule visée par la souris
     /// </summary>
-    protected Cell targetCell = null;
+    private Cell targetCell = null;
 
     public bool inDrag = false;
 
@@ -40,6 +40,7 @@ public abstract class BasePiece : EventTrigger
     }
 
     public static int CellPadding { get => cellPadding; }
+    public Cell TargetCell { get => targetCell; set => targetCell = value; }
 
     public virtual void Setup(bool newIsWhite, PieceManager newPM)
     {
@@ -208,12 +209,32 @@ public abstract class BasePiece : EventTrigger
         }
         else
         {
-            Move();            
+            if (PieceManager.IAmode)
+            {
+                string move = "";
+                move += pieceManager.posA[currentCell.boardPosition.x];
+                move += pieceManager.posB[currentCell.boardPosition.y];
+                move += pieceManager.posA[targetCell.boardPosition.x];
+                move += pieceManager.posB[targetCell.boardPosition.y];
+                // If promotion
+                if (this.GetType() == typeof(Pawn) && (TargetCell.boardPosition.y == 0 || TargetCell.boardPosition.y == 7))
+                {
+                    move += "q";
+                }
+                Debug.Log(move);
+                pieceManager.stockfish.setIAmove(move);
+                Move();
+            }
+            else
+            {
+                Move();
+            }                   
         }
 
         // Hide Highlited
         ClearCellsHighlight();
 
+        
     }
 
     public void Reset()
@@ -228,7 +249,7 @@ public abstract class BasePiece : EventTrigger
         gameObject.SetActive(false);
     }
 
-    protected virtual void Move()
+    public virtual void Move()
     {
         // sounds
         AudioClip clip = null;
@@ -250,6 +271,7 @@ public abstract class BasePiece : EventTrigger
         // If there is a piece, remove it
         targetCell.RemovePiece();
 
+        bool castling = false;
         // Handle castle
         if (currentCell.currentPiece.GetType() == typeof(King) && currentCell.currentPiece.hasMoved == false)
         {
@@ -258,12 +280,14 @@ public abstract class BasePiece : EventTrigger
                 BasePiece rook = currentCell.board.allCells[0][currentCell.boardPosition.y].currentPiece;
                 rook.targetCell = currentCell.board.allCells[3][currentCell.boardPosition.y];
                 rook.Move();
+                castling = true;
             }
             else if(targetCell.boardPosition.x == 6)
             {
                 BasePiece rook = currentCell.board.allCells[7][currentCell.boardPosition.y].currentPiece;
                 rook.targetCell = currentCell.board.allCells[5][currentCell.boardPosition.y];
                 rook.Move();
+                castling = true;
             }
         }
 
@@ -293,7 +317,8 @@ public abstract class BasePiece : EventTrigger
         
         pieceManager.checkVerificationInProcess = false;
 
-        pieceManager.SetTurn(!isWhite);
+        
+
         CheckGameOver(!isWhite);
 
         // Sounds
@@ -301,6 +326,9 @@ public abstract class BasePiece : EventTrigger
             clip = null;
         if (clip != null)
             pieceManager.audio.PlayOneShot(clip);
+
+        if (!pieceManager.IATurn && pieceManager.gameState == GameState.INGAME && !castling)
+            pieceManager.SetTurn(!isWhite);
     }
 
     public bool isCheckVerif(bool AttakingSideIsWhite)
