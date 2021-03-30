@@ -214,11 +214,15 @@ public class PieceManager : MonoBehaviour
             if (isIAWithe)
             {
                 StartCoroutine(showIAMoveCoroutine());
+                clockManager.displayBlack.text = "Joueur";
+                clockManager.displayWhite.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
             }
             else
+            {
                 SetInteractive(whitePieces, true);
-            clockManager.displayBlack.enabled = false;
-            clockManager.displayWhite.enabled = false;
+                clockManager.displayWhite.text = "Joueur";
+                clockManager.displayBlack.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
+            }
         }
         else
         {
