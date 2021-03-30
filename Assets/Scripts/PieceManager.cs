@@ -28,9 +28,6 @@ public class PieceManager : MonoBehaviour
     public Theme theme = null;
 
     [HideInInspector]
-    public bool isWhiteTurn;
-
-    [HideInInspector]
     public new AudioSource audio;
 
     public ClockManager clockManager;
@@ -125,8 +122,6 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
-        stockfish.Setup();
-
         audio = gameObject.AddComponent<AudioSource>();
 
         chessBoard = board;
@@ -142,28 +137,41 @@ public class PieceManager : MonoBehaviour
         PlacePieces("2", "1", whitePieces, board);
         PlacePieces("7", "8", blackPieces, board);
 
-        SetInteractive(whitePieces, true);
+        SetInteractive(whitePieces, false);
         SetInteractive(blackPieces, false);
 
         enPassantCell = null;
-
-        isWhiteTurn = true;
-
+        checkVerificationInProcess = false;
         clockManager.Setup(whiteTime, blackTime, this);
 
-        checkVerificationInProcess = false;
+        if (IAmode){
+            stockfish.Setup();
+            if (isIAWithe)
+            {
+                StartCoroutine(showIAMoveCoroutine());
+                clockManager.displayBlack.text = "Joueur";
+                clockManager.displayWhite.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
+            }
+            else
+            {
+                SetInteractive(whitePieces, true);
+                clockManager.displayWhite.text = "Joueur";
+                clockManager.displayBlack.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
+            }
+        }
+        else
+        {
+            SetInteractive(whitePieces, true);            
+        }
+
+        
     }
 
     public void ResetGame()
     {
-        stockfish.Close();
-        stockfish.Setup();
-
         gameState = GameState.INGAME;
 
         result.text = "";
-
-        isWhiteTurn = true;
 
         foreach (List<Cell> row in chessBoard.allCells)
         {
@@ -198,6 +206,24 @@ public class PieceManager : MonoBehaviour
         clockManager.Setup(whiteTime, blackTime, this);
 
         checkVerificationInProcess = false;
+
+        if (IAmode)
+        {
+            stockfish.Close();
+            stockfish.Setup();
+            if (isIAWithe)
+            {
+                StartCoroutine(showIAMoveCoroutine());
+            }
+            else
+                SetInteractive(whitePieces, true);
+            clockManager.displayBlack.enabled = false;
+            clockManager.displayWhite.enabled = false;
+        }
+        else
+        {
+            SetInteractive(whitePieces, true);
+        }
     }
 
     private List<BasePiece> CreatePieces(bool isWhite, Board board)
@@ -264,9 +290,10 @@ public class PieceManager : MonoBehaviour
     {
         if (IAmode)
         {
+            clockManager.setTurn(isWhiteTurn);
             SetInteractive(whitePieces, false);
             SetInteractive(blackPieces, false);
-            StartCoroutine(showIAMoveCoroutine());            
+            StartCoroutine(showIAMoveCoroutine());
         }
         else
         {
@@ -314,7 +341,15 @@ public class PieceManager : MonoBehaviour
         dep.currentPiece.Move();
         IATurn = false;
 
-        SetInteractive(whitePieces, true);
+        if (GameState.INGAME == gameState)
+        {
+            if (isIAWithe)
+                SetInteractive(blackPieces, true);
+            else
+                SetInteractive(whitePieces, true);
+
+            clockManager.setTurn(!isIAWithe);
+        }
     }
 
     public void PawnPromotion(Pawn pawn, Cell BeforeCell)

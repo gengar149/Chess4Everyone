@@ -5,7 +5,22 @@ using UnityEngine;
 public class IA : MonoBehaviour
 {
     System.Diagnostics.Process process = null;
+    public static int level = 0;
     string lastFEN;
+
+    public static Dictionary<int, int> IA_Level = new Dictionary<int, int>()
+    {
+        {0, 0},
+        {1, 5},
+        {2, 20}
+    };
+
+    public static Dictionary<int, int> IA_Game_Level = new Dictionary<int, int>()
+    {
+        {0, 1},
+        {5, 2},
+        {20, 3}
+    };
 
     public void Setup()
     {
@@ -16,7 +31,7 @@ public class IA : MonoBehaviour
         process.StartInfo.RedirectStandardInput = true;
         process.StartInfo.RedirectStandardOutput = true;
         process.Start();
-        process.StandardInput.WriteLine("setoption Name Skill Level value 0");
+        process.StandardInput.WriteLine("setoption Name Skill Level value " + level);
         process.StandardInput.WriteLine("position startpos");
 
         //lastFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
