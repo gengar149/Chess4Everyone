@@ -169,6 +169,8 @@ public class PieceManager : MonoBehaviour
 
     public void ResetGame()
     {
+        if (IATurn)
+            return;
         gameState = GameState.INGAME;
 
         result.text = "";
@@ -197,7 +199,7 @@ public class PieceManager : MonoBehaviour
         PlacePieces("2", "1", whitePieces, chessBoard);
         PlacePieces("7", "8", blackPieces, chessBoard);
 
-        SetInteractive(whitePieces, true);
+        SetInteractive(whitePieces, false);
         SetInteractive(blackPieces, false);
 
         enPassantCell = null;
@@ -325,8 +327,6 @@ public class PieceManager : MonoBehaviour
         string depB = best.Substring(1, 1);
         string arrA = best.Substring(2, 1);
         string arrB = best.Substring(3, 1);
-
-        
 
         Cell dep = chessBoard.allCells[coordA[depA]][coordB[depB]];
         Cell targ = chessBoard.allCells[coordA[arrA]][coordB[arrB]];
