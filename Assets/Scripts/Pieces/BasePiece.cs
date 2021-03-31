@@ -42,6 +42,11 @@ public abstract class BasePiece : EventTrigger
     public static int CellPadding { get => cellPadding; }
     public Cell TargetCell { get => targetCell; set => targetCell = value; }
 
+    /// <summary>
+    /// Init piece
+    /// </summary>
+    /// <param name="newIsWhite"></param>
+    /// <param name="newPM"></param>
     public virtual void Setup(bool newIsWhite, PieceManager newPM)
     {
         inDrag = false;
@@ -67,6 +72,10 @@ public abstract class BasePiece : EventTrigger
         }
     }
 
+    /// <summary>
+    /// Place piece on the board
+    /// </summary>
+    /// <param name="newCell"></param>
     public void PlaceInit(Cell newCell)
     {
         currentCell = newCell;
@@ -77,6 +86,12 @@ public abstract class BasePiece : EventTrigger
         gameObject.SetActive(true); // ?
     }
 
+    /// <summary>
+    /// Check possible moves for a direction
+    /// </summary>
+    /// <param name="xDirection"></param>
+    /// <param name="yDirection"></param>
+    /// <param name="movement"></param>
     private void CreateCellPath(int xDirection, int yDirection, int movement)
     {
         // Target position
@@ -119,6 +134,10 @@ public abstract class BasePiece : EventTrigger
         }
     }
 
+    /// <summary>
+    /// Add cell in a specific list
+    /// </summary>
+    /// <param name="possibleCell"></param>
     protected void addPossibleCell(Cell possibleCell)
     {
         if (pieceManager.checkVerificationInProcess)
@@ -127,6 +146,9 @@ public abstract class BasePiece : EventTrigger
             highlightedCells.Add(possibleCell);
     }
 
+    /// <summary>
+    /// Check possible moves of a piece
+    /// </summary>
     protected virtual void CheckPathing()
     {
         // Horizontal
@@ -147,12 +169,18 @@ public abstract class BasePiece : EventTrigger
 
     }
 
+    /// <summary>
+    /// Display possible moves
+    /// </summary>
     protected void ShowCellsHighlight()
     {
         foreach (Cell cell in highlightedCells)
             cell.outlineImage.enabled = true;
     }
 
+    /// <summary>
+    /// Clear display of all possible moves
+    /// </summary>
     protected void ClearCellsHighlight()
     {
         foreach (Cell cell in highlightedCells)

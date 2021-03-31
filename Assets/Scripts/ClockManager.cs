@@ -23,6 +23,12 @@ public class ClockManager : MonoBehaviour
 
     private bool isWhiteTurn = true;
 
+    /// <summary>
+    /// Init black and white clocks
+    /// </summary>
+    /// <param name="whiteTime"></param>
+    /// <param name="blackTime"></param>
+    /// <param name="newPm"></param>
     public void Setup(float whiteTime, float blackTime, PieceManager newPm)
     {
 
@@ -43,6 +49,9 @@ public class ClockManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Start clocks
+    /// </summary>
     public void StartClocks()
     {
         clockWhite.Start();
@@ -50,7 +59,9 @@ public class ClockManager : MonoBehaviour
         launched = true;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame
+    /// </summary>
     void Update()
     {
         if (launched)

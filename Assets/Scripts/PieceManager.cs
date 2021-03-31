@@ -120,6 +120,10 @@ public class PieceManager : MonoBehaviour
         {7, "8"},
     };
 
+    /// <summary>
+    /// init chess piece on the board
+    /// </summary>
+    /// <param name="board"></param>
     public void Setup(Board board)
     {
         audio = gameObject.AddComponent<AudioSource>();
@@ -167,6 +171,9 @@ public class PieceManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Put piece at original position
+    /// </summary>
     public void ResetGame()
     {
         if (IATurn)
@@ -232,6 +239,12 @@ public class PieceManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Create piece list
+    /// </summary>
+    /// <param name="isWhite"></param>
+    /// <param name="board"></param>
+    /// <returns></returns>
     private List<BasePiece> CreatePieces(bool isWhite, Board board)
     {
         List<BasePiece> pieceList = new List<BasePiece>();
@@ -273,6 +286,13 @@ public class PieceManager : MonoBehaviour
         return pieceList;
     }
 
+    /// <summary>
+    /// Place piece on the board
+    /// </summary>
+    /// <param name="pawnRow"></param>
+    /// <param name="royaltyRow"></param>
+    /// <param name="pieces"></param>
+    /// <param name="board"></param>
     private void PlacePieces(string pawnRow, string royaltyRow, List<BasePiece> pieces, Board board)
     {
         for (int i = 0; i < board.Column; i++)
@@ -282,6 +302,11 @@ public class PieceManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set piece draggable
+    /// </summary>
+    /// <param name="pieces"></param>
+    /// <param name="state"></param>
     private void SetInteractive(List<BasePiece> pieces, bool state)
     {
         foreach(BasePiece piece in pieces)
@@ -292,6 +317,10 @@ public class PieceManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set turn to change turn
+    /// </summary>
+    /// <param name="isWhiteTurn"></param>
     public void SetTurn(bool isWhiteTurn)
     {
         if (IAmode)
@@ -316,6 +345,11 @@ public class PieceManager : MonoBehaviour
             clockManager.setTurn(isWhiteTurn);
         }        
     }
+
+    /// <summary>
+    /// Display AI move
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator showIAMoveCoroutine()
     {
         
@@ -356,6 +390,11 @@ public class PieceManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Transform pawn into queen
+    /// </summary>
+    /// <param name="pawn"></param>
+    /// <param name="BeforeCell"></param>
     public void PawnPromotion(Pawn pawn, Cell BeforeCell)
     {
         pawn.currentCell.RemovePiece();
@@ -393,6 +432,11 @@ public class PieceManager : MonoBehaviour
         queen.gameObject.SetActive(true);        
     }
 
+    /// <summary>
+    /// return black king or white king
+    /// </summary>
+    /// <param name="isWhite"></param>
+    /// <returns></returns>
     public King getKing(bool isWhite)
     {
         if (isWhite)
@@ -401,6 +445,9 @@ public class PieceManager : MonoBehaviour
             return blackKing;
     }
 
+    /// <summary>
+    /// Display result on the scene
+    /// </summary>
     public void ShowResult()
     {        
         audio.PlayOneShot((AudioClip)Resources.Load("Sounds/basic/end"));
@@ -441,6 +488,10 @@ public class PieceManager : MonoBehaviour
         result.enabled = true;
     }
 
+    /// <summary>
+    /// Change chess board theme
+    /// </summary>
+    /// <param name="newTheme"></param>
     public void ApplyTheme(Theme newTheme)
     {
         theme = newTheme;

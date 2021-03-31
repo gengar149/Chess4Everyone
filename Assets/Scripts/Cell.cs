@@ -42,6 +42,9 @@ public class Cell : MonoBehaviour
         enPassant = null;
     }
 
+    /// <summary>
+    /// Remove piece positioned on the cell
+    /// </summary>
     public void RemovePiece()
     {
         if (currentPiece != null)
@@ -54,6 +57,11 @@ public class Cell : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get state of a cell
+    /// </summary>
+    /// <param name="checkingPiece"></param>
+    /// <returns></returns>
     public CellState GetState(BasePiece checkingPiece)
     {
         //check

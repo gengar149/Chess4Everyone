@@ -11,6 +11,9 @@ public class MainMenu : MonoBehaviour
     public TMP_Dropdown ddLevel;
     public TMP_Dropdown ddIASide;
 
+    /// <summary>
+    /// Launch game 1vs1 mode
+    /// </summary>
     public void PlayGame()
     {
         if (ddTime.value == 0)
@@ -38,6 +41,9 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1); // Game
     }
 
+    /// <summary>
+    /// Launch game player vs AI mode
+    /// </summary>
     public void PlayIA()
     {
         PieceManager.IAmode = true;
@@ -52,6 +58,9 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1); // Game
     }
 
+    /// <summary>
+    /// Exit application
+    /// </summary>
     public void QuitGame()
     {
         Debug.Log("Quit");
