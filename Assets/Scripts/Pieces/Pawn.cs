@@ -22,10 +22,11 @@ public class Pawn : BasePiece
         // En passant
         Cell targ = TargetCell;
         Cell beforeMove = currentCell;
+        bool isFirstMove = !hasMoved;
 
         base.Move();
 		
-        if (!hasMoved)
+        if (isFirstMove)
         {
             if (targ.boardPosition.y == beforeMove.boardPosition.y + 2 * movement.y)
             {
@@ -33,7 +34,6 @@ public class Pawn : BasePiece
                 enPassantCell.enPassant = this;
                 pieceManager.enPassantCell = enPassantCell;
             }
-            hasMoved = true;
         }
         if(currentCell.boardPosition.y == 0 || currentCell.boardPosition.y == 7)
         {
