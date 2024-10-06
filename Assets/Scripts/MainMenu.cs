@@ -11,6 +11,9 @@ public class MainMenu : MonoBehaviour
     public TMP_Dropdown ddLevel;
     public TMP_Dropdown ddIASide;
 
+    [SerializeField] GameObject settingsMenu;
+
+
     /// <summary>
     /// Launch game 1vs1 mode
     /// </summary>
@@ -56,6 +59,17 @@ public class MainMenu : MonoBehaviour
         IA.level = IA.IA_Level[ddLevel.value];
 
         SceneManager.LoadScene(1); // Game
+    }
+
+
+    public void OpenSettings()
+    {
+        settingsMenu.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        settingsMenu.SetActive(false);
     }
 
     /// <summary>
