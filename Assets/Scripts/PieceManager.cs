@@ -58,6 +58,10 @@ public class PieceManager : MonoBehaviour
     [HideInInspector]
     public bool checkVerificationInProcess = false;
 
+    [SerializeField] TMP_Text moveHistory;
+    int moveCount = 0;
+
+
     private string[] pieceOrder = { "P", "P", "P", "P", "P", "P", "P", "P",
         "R", "KN", "B", "Q", "K", "B", "KN", "R" };
 
@@ -119,6 +123,18 @@ public class PieceManager : MonoBehaviour
         {6, "7"},
         {7, "8"},
     };
+
+    /*
+    public void PrintPlayerMoves()
+    {
+        string playerMove = "";
+        playerMove += posA[BasePiece.currentCell.boardPosition.x];
+        playerMove += posB[BasePiece.currentCell.boardPosition.y];
+        playerMove += posA[BasePiece.targetCell.boardPosition.x];
+        playerMove += posB[BasePiece.targetCell.boardPosition.y];
+    }*/
+
+
 
     /// <summary>
     /// init chess piece on the board
@@ -371,6 +387,30 @@ public class PieceManager : MonoBehaviour
             best += "q";
         }
 
+        
+        string symbol = "";
+
+        if (dep.currentPiece.GetType() == typeof(Queen))
+            symbol = "Q";
+
+        else if (dep.currentPiece.GetType() == typeof(King))
+            symbol = "K";
+
+        else if (dep.currentPiece.GetType() == typeof(Bishop))
+            symbol = "B";
+
+        else if (dep.currentPiece.GetType() == typeof(Rook))
+            symbol = "R";
+
+        else if (dep.currentPiece.GetType() == typeof(Knight))
+            symbol = "K";
+        else
+            symbol = "";
+
+        string endPos = arrA + arrB;
+        HistoryLog(symbol, endPos);
+
+
         Debug.Log(best);
 
         stockfish.setIAmove(best);
@@ -389,6 +429,16 @@ public class PieceManager : MonoBehaviour
             clockManager.setTurn(!isIAWithe);
         }
     }
+
+    void HistoryLog(string pieceSymbol, string endPosition)
+    {
+        moveHistory.text += ++moveCount + " : " + pieceSymbol + endPosition + "\n";
+    }
+
+
+
+
+
 
     /// <summary>
     /// Transform pawn into queen

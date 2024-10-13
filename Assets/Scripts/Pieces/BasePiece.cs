@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public abstract class BasePiece : EventTrigger
 {
@@ -30,9 +31,13 @@ public abstract class BasePiece : EventTrigger
     /// <summary>
     /// Cellule visée par la souris
     /// </summary>
-    private Cell targetCell = null;
+    public Cell targetCell = null;
 
     public bool inDrag = false;
+
+    [SerializeField] TMP_Text moveHistory;
+
+
 
     public PieceManager GetPieceManager()
     {
@@ -71,6 +76,8 @@ public abstract class BasePiece : EventTrigger
                 GetComponent<Image>().color = pieceManager.theme.blackPiece;
         }
     }
+
+
 
     /// <summary>
     /// Place piece on the board
@@ -249,7 +256,15 @@ public abstract class BasePiece : EventTrigger
                 {
                     move += "q";
                 }
-                Debug.Log(move);
+               // pieceManager.PrintPlayerMoves();
+                //moveHistory.text += move + "\n";
+                //moveHistory.text += move + "\n";
+
+                //Debug.Log(move);
+
+
+
+
                 pieceManager.stockfish.setIAmove(move);
                 Move();
             }
