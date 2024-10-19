@@ -124,15 +124,16 @@ public class PieceManager : MonoBehaviour
         {7, "8"},
     };
 
-    /*
-    public void PrintPlayerMoves()
+    
+    public void PrintPlayerMoves(string playerMove)
     {
-        string playerMove = "";
+        Debug.Log(playerMove);
+        /*string playerMove = "";
         playerMove += posA[BasePiece.currentCell.boardPosition.x];
         playerMove += posB[BasePiece.currentCell.boardPosition.y];
         playerMove += posA[BasePiece.targetCell.boardPosition.x];
-        playerMove += posB[BasePiece.targetCell.boardPosition.y];
-    }*/
+        playerMove += posB[BasePiece.targetCell.boardPosition.y];*/
+    }
 
 
 
@@ -410,8 +411,8 @@ public class PieceManager : MonoBehaviour
         string endPos = arrA + arrB;
         HistoryLog(symbol, endPos);
 
+        //Debug.Log(best);
 
-        Debug.Log(best);
 
         stockfish.setIAmove(best);
 

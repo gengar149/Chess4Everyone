@@ -572,7 +572,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Noirs
+  m_text: Black
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1952,6 +1952,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PieceManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2434202119097696585, guid: f6e7330a4627ede45bcae3fbd3fffd96,
+        type: 3}
+      propertyPath: m_TagString
+      value: PieceManager
+      objectReference: {fileID: 0}
     - target: {fileID: 3392181566955825990, guid: f6e7330a4627ede45bcae3fbd3fffd96,
         type: 3}
       propertyPath: result
@@ -2301,7 +2306,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Blancs
+  m_text: White
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

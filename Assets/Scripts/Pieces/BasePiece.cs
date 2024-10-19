@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System.Security.Cryptography;
 
 public abstract class BasePiece : EventTrigger
 {
@@ -36,7 +37,6 @@ public abstract class BasePiece : EventTrigger
     public bool inDrag = false;
 
     [SerializeField] TMP_Text moveHistory;
-
 
 
     public PieceManager GetPieceManager()
@@ -256,11 +256,34 @@ public abstract class BasePiece : EventTrigger
                 {
                     move += "q";
                 }
-               // pieceManager.PrintPlayerMoves();
+                string symbol = "";
+
+                if (currentCell.currentPiece.GetType() == typeof(Queen))
+                    symbol = "Q";
+
+                else if (currentCell.currentPiece.GetType() == typeof(King))
+                    symbol = "K";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Bishop))
+                    symbol = "B";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Rook))
+                    symbol = "R";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Knight))
+                    symbol = "K";
+                else
+                    symbol = "";
+
+
+                pieceManager.PrintPlayerMoves(symbol + pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
                 //moveHistory.text += move + "\n";
                 //moveHistory.text += move + "\n";
 
                 //Debug.Log(move);
+
+
+
 
 
 
