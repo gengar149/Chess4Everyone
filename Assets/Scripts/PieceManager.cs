@@ -59,7 +59,17 @@ public class PieceManager : MonoBehaviour
     public bool checkVerificationInProcess = false;
 
     [SerializeField] TMP_Text moveHistory;
-    int moveCount = 0;
+    [SerializeField] TMP_Text playerMoveHistory;
+
+
+    [SerializeField] TMP_Text textObject;
+    [SerializeField] GameObject playerMoveHolder;
+    [SerializeField] GameObject enemyMoveHolder;
+
+
+
+    int enemyMoveCount = 0;
+    int playerMoveCount = 0;
 
 
     private string[] pieceOrder = { "P", "P", "P", "P", "P", "P", "P", "P",
@@ -127,7 +137,7 @@ public class PieceManager : MonoBehaviour
     
     public void PrintPlayerMoves(string playerMove)
     {
-        Debug.Log(playerMove);
+        PlayerHistoryLog(playerMove);
         /*string playerMove = "";
         playerMove += posA[BasePiece.currentCell.boardPosition.x];
         playerMove += posB[BasePiece.currentCell.boardPosition.y];
@@ -409,7 +419,7 @@ public class PieceManager : MonoBehaviour
             symbol = "";
 
         string endPos = arrA + arrB;
-        HistoryLog(symbol, endPos);
+        EnemyHistoryLog(symbol, endPos);
 
         //Debug.Log(best);
 
@@ -431,12 +441,19 @@ public class PieceManager : MonoBehaviour
         }
     }
 
-    void HistoryLog(string pieceSymbol, string endPosition)
+    void EnemyHistoryLog(string pieceSymbol, string endPosition)
     {
-        moveHistory.text += ++moveCount + " : " + pieceSymbol + endPosition + "\n";
+        TMP_Text tempObject = Instantiate(textObject, enemyMoveHolder.transform);
+        tempObject.text = ++enemyMoveCount + " : " + pieceSymbol + endPosition;
+        //moveHistory.text += ++enemyMoveCount + " : " + pieceSymbol + endPosition + "\n";
     }
 
-
+    void PlayerHistoryLog(string move)
+    {
+        TMP_Text tempObject = Instantiate(textObject, playerMoveHolder.transform);
+        tempObject.text = ++playerMoveCount + " : " + move;
+        //playerMoveHistory.text += ++playerMoveCount + " : " + move + "\n";
+    }
 
 
 
