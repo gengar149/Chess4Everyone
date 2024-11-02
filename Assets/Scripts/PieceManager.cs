@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public enum GameState
 {
@@ -62,7 +63,7 @@ public class PieceManager : MonoBehaviour
     [SerializeField] TMP_Text playerMoveHistory;
 
 
-    [SerializeField] TMP_Text textObject;
+    [SerializeField] GameObject buttonPrefab;
     [SerializeField] GameObject playerMoveHolder;
     [SerializeField] GameObject enemyMoveHolder;
 
@@ -70,6 +71,8 @@ public class PieceManager : MonoBehaviour
 
     int enemyMoveCount = 0;
     int playerMoveCount = 0;
+    [SerializeField] PlayTextToSpeech mainCamera;
+    [SerializeField] Toggle toggle;
 
 
     private string[] pieceOrder = { "P", "P", "P", "P", "P", "P", "P", "P",
@@ -443,16 +446,58 @@ public class PieceManager : MonoBehaviour
 
     void EnemyHistoryLog(string pieceSymbol, string endPosition)
     {
-        TMP_Text tempObject = Instantiate(textObject, enemyMoveHolder.transform);
-        tempObject.text = ++enemyMoveCount + " : " + pieceSymbol + endPosition;
-        //moveHistory.text += ++enemyMoveCount + " : " + pieceSymbol + endPosition + "\n";
+        GameObject newButton = Instantiate(buttonPrefab, enemyMoveHolder.transform);
+        TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (buttonText != null)
+        {
+
+            buttonText.text = (++enemyMoveCount + " : " + pieceSymbol + endPosition).ToString();
+        }
+        else
+        {
+            Debug.LogError(" >:( ");
+        }
+        if (toggle.isOn)
+            mainCamera.ChangeAudio(buttonText.text);
+
+
+        Button buttonComponent = newButton.GetComponent<Button>();
+        buttonComponent.onClick.AddListener(() => mainCamera.ChangeAudio(buttonText.text));
     }
 
     void PlayerHistoryLog(string move)
     {
-        TMP_Text tempObject = Instantiate(textObject, playerMoveHolder.transform);
-        tempObject.text = ++playerMoveCount + " : " + move;
-        //playerMoveHistory.text += ++playerMoveCount + " : " + move + "\n";
+
+        GameObject newButton = Instantiate(buttonPrefab, playerMoveHolder.transform);
+        TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (buttonText != null)
+        {
+
+            buttonText.text = (++playerMoveCount + " : " + move).ToString();
+        }
+        else
+        {
+            Debug.LogError(" :( ");
+        }
+        if (toggle.isOn)
+            mainCamera.ChangeAudio(buttonText.text);
+
+
+        Button buttonComponent = newButton.GetComponent<Button>();
+        buttonComponent.onClick.AddListener(() => mainCamera.ChangeAudio(buttonText.text));
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 

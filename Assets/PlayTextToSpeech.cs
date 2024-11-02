@@ -9,19 +9,19 @@ public class PlayTextToSpeech : MonoBehaviour
     public string text;
     int num = 1;
 
-
-    public void playAudio() {
+    private void Start()
+    {
         zeke = GetComponent<LMNTSpeech>();
-        //zeke.dialogue = num++.ToString();
+    }
+
+    public void PlayAudio() {
         StartCoroutine(zeke.Talk());
     }
 
-    public void changeAudio()
+    public void ChangeAudio(string newText)
     {
-        string erm = "new text";
-        zeke.SetDialogue(erm);
-
-        
+        zeke.SetDialogue(newText);
+        PlayAudio(); 
     }
 
 }

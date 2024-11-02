@@ -51,7 +51,14 @@ namespace LMNT
 
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    _audioSource.clip = _handler.audioClip;
+                    try
+                    {
+                        _audioSource.clip = _handler.audioClip;
+                    }
+                    catch
+                    {
+                        Debug.LogError("something broken in LMNTSpeech \nPrefetch function");
+                    }
                 }
                 else
                 {
@@ -76,7 +83,7 @@ namespace LMNT
         public void SetDialogue(string newDialogue)
         {
             dialogue = newDialogue;
-            StartCoroutine(Talk()); // Re-fetch and play updated text
+            //StartCoroutine(Talk());
         }
 
         private string LookupByName(string name)
