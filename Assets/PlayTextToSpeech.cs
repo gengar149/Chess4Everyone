@@ -12,7 +12,16 @@ public class PlayTextToSpeech : MonoBehaviour
 
     public void playAudio() {
         zeke = GetComponent<LMNTSpeech>();
-        zeke.dialogue = num++.ToString();
+        //zeke.dialogue = num++.ToString();
         StartCoroutine(zeke.Talk());
-    } 
+    }
+
+    public void changeAudio()
+    {
+        string erm = "new text";
+        zeke.SetDialogue(erm);
+
+        
+    }
+
 }
