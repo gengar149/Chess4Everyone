@@ -195,7 +195,8 @@ public class PieceManager : MonoBehaviour
         }
         else
         {
-            SetInteractive(whitePieces, true);            
+            SetInteractive(whitePieces, true);
+            SetInteractive(blackPieces, true);
         }
 
         
@@ -266,6 +267,7 @@ public class PieceManager : MonoBehaviour
         else
         {
             SetInteractive(whitePieces, true);
+            SetInteractive(blackPieces, true);
         }
     }
 
@@ -362,6 +364,10 @@ public class PieceManager : MonoBehaviour
         }
         else
         {
+            SetInteractive(whitePieces, true);
+            SetInteractive(blackPieces, true);
+            /*
+
             if (isKingAlive == false)
                 return;
 
@@ -373,7 +379,8 @@ public class PieceManager : MonoBehaviour
                 clockManager.StartClocks();
             }
             clockManager.setTurn(isWhiteTurn);
-        }        
+            */
+        }     
     }
 
     /// <summary>
