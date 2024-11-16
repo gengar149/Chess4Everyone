@@ -222,6 +222,7 @@ public abstract class BasePiece : EventTrigger
 
     public override void OnEndDrag(PointerEventData eventData)
     {
+        
         base.OnEndDrag(eventData);
 
         inDrag = false;
@@ -293,7 +294,46 @@ public abstract class BasePiece : EventTrigger
             }
             else
             {
-                Move();
+                string move = "";
+                move += pieceManager.posA[currentCell.boardPosition.x];
+                move += pieceManager.posB[currentCell.boardPosition.y];
+                move += pieceManager.posA[targetCell.boardPosition.x];
+                move += pieceManager.posB[targetCell.boardPosition.y];
+
+                if (this.GetType() == typeof(Pawn) && (TargetCell.boardPosition.y == 0 || TargetCell.boardPosition.y == 7))
+                {
+                    move += "q";
+                }
+                string symbol = "";
+
+                if (currentCell.currentPiece.GetType() == typeof(Queen))
+                    symbol = "Q";
+
+                else if (currentCell.currentPiece.GetType() == typeof(King))
+                    symbol = "K";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Bishop))
+                    symbol = "B";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Rook))
+                    symbol = "R";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Knight))
+                    symbol = "K";
+                else
+                    symbol = "";
+
+                if (pieceManager.whitePieces.Contains(this))
+                {
+
+                    pieceManager.PrintPlayerMoves(symbol + pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
+                    Move();
+                }
+                else
+                {
+                    pieceManager.EnemyHistoryLog(symbol, pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
+                    Move();
+                }
             }                   
         }
 
@@ -336,6 +376,8 @@ public abstract class BasePiece : EventTrigger
 
         // If there is a piece, remove it
         targetCell.RemovePiece();
+
+        Debug.Log(targetCell.boardPosition);
 
         bool castling = false;
         // Handle castle
