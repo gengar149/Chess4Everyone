@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -5,33 +6,61 @@ using UnityEngine.UI;
 
 namespace HuggingFace.API.Examples {
     public class SpeechRecognitionExample : MonoBehaviour {
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button stopButton;
+
         [SerializeField] private TextMeshProUGUI text;
 
         private AudioClip clip;
         private byte[] bytes;
         private bool recording;
 
-        private void Start() {
-            try
-            {
-                startButton.onClick.AddListener(StartRecording);
-            stopButton.onClick.AddListener(StopRecording);
-            stopButton.interactable = false;
-            }
-            catch
-            {
-                Debug.LogWarning("No Buttons Added");
-            }
-        }
+        [SerializeField] GameObject canvas;
+
+        List<string> sandboxWords = new List<string>
+        {
+            "one",
+            "sandbox",
+            "sand box"
+        };
+
+        List<string> versusWords = new List<string>
+        {
+            "two",
+            "versus ai",
+            "verse ai",
+            "versus",
+            "ai",
+            "verse"
+
+        };
+
+        List<string> exitWords = new List<string>
+        {
+            "three",
+            "exit",
+            "quit",
+            "leave",
+            "escape",
+            "quit game",
+            "leave game",
+            "exit game",
+            "get me out of here"
+        };
+
+        List<string> wordListWords = new List<string>
+        {
+            "word list",
+            "wordless",
+            "were listening"
+        };
+
 
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.Space))
-                StartRecording();
-            if (Input.GetKeyDown(KeyCode.C))
-                StopRecording();
-
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                if (recording)
+                    StopRecording();
+                else
+                    StartRecording();
+            }
 
             if (recording && Microphone.GetPosition(null) >= clip.samples) {
                 StopRecording();
@@ -63,7 +92,13 @@ namespace HuggingFace.API.Examples {
             //stopButton.interactable = false;
             HuggingFaceAPI.AutomaticSpeechRecognition(bytes, response => {
                 text.color = Color.white;
+                //text.text = response;
+
+
+                response = response.Replace(",", "").Replace(".", "").Replace("?", "").Replace("!", "").Replace("'", "").ToLower().Trim();
                 text.text = response;
+                Command(response);
+
                 //startButton.interactable = true;
             }, error => {
                 text.color = Color.red;
@@ -71,6 +106,62 @@ namespace HuggingFace.API.Examples {
                 //startButton.interactable = true;
             });
         }
+
+        void Command(string command)
+        {
+
+            if (sandboxWords.Contains(command))
+            {
+                Sandbox();
+            }
+            else if (versusWords.Contains(command))
+            {
+                VsAI();
+            }
+            else if (exitWords.Contains(command))
+            {
+                ExitGame();
+            }
+            else if (wordListWords.Contains(command))
+            {
+                WordList();
+            }
+            else
+            {
+                Close();
+            }
+
+        }
+
+
+        void Sandbox()
+        {
+            text.text = "Going to Sandbox";
+            canvas.GetComponent<MainMenu>().PlayGame();
+        }
+
+        void VsAI()
+        {
+            text.text = "Going to Versus AI";
+            canvas.GetComponent<MainMenu>().PlayIA();
+        }
+
+        void ExitGame()
+        {
+            text.text = "Quitting";
+            Application.Quit();
+        }
+
+        void WordList()
+        {
+            canvas.GetComponent<MainMenu>().OpenSettings();
+        }
+
+        void Close()
+        {
+            canvas.GetComponent<MainMenu>().CloseSettings();
+        }
+
 
         private byte[] EncodeAsWAV(float[] samples, int frequency, int channels) {
             using (var memoryStream = new MemoryStream(44 + samples.Length * 2)) {
