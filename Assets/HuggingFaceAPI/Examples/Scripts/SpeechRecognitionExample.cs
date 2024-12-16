@@ -1,8 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
+//using System.Diagnostics.Eventing.Reader;
 
 namespace HuggingFace.API.Examples {
     public class SpeechRecognitionExample : MonoBehaviour {
@@ -14,6 +18,8 @@ namespace HuggingFace.API.Examples {
         private bool recording;
 
         [SerializeField] GameObject canvas;
+        [SerializeField] GameManager gameManager;
+        [SerializeField] Toggle toggle;
 
         List<string> sandboxWords = new List<string>
         {
@@ -53,6 +59,22 @@ namespace HuggingFace.API.Examples {
             "were listening"
         };
 
+        List<string> TTsWords = new List<string>
+        {
+            "tts",
+            "text to speech",
+            "text to switch",
+            "texas beach",
+            "text the speech"
+
+        };
+
+        List<string> restartWords = new List<string>
+        {
+            "reset",
+            "restart",
+            "we start"
+        };
 
         private void Update() {
             if (Input.GetKeyDown(KeyCode.Space)) {
@@ -97,7 +119,13 @@ namespace HuggingFace.API.Examples {
 
                 response = response.Replace(",", "").Replace(".", "").Replace("?", "").Replace("!", "").Replace("'", "").ToLower().Trim();
                 text.text = response;
-                Command(response);
+
+                if (SceneManager.GetActiveScene().name == "MenuScene")
+                    Command(response);
+                else
+                    MovePiece(response);
+
+
 
                 //startButton.interactable = true;
             }, error => {
@@ -132,6 +160,29 @@ namespace HuggingFace.API.Examples {
             }
 
         }
+
+        void MovePiece(string move)
+        {
+            text.text = move;
+            if (restartWords.Contains(move))
+                gameManager.Reload();
+            else if (TTsWords.Contains(move))
+                toggle.isOn = !toggle.isOn;
+            else if (exitWords.Contains(move))
+                gameManager.BackMenu();
+            //else
+            //  TTSPlayerMove(move);
+
+            UnityEngine.Debug.Log(move.Length);
+
+
+        }
+
+
+
+
+
+
 
 
         void Sandbox()

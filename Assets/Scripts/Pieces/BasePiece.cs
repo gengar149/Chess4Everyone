@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 public abstract class BasePiece : EventTrigger
 {
@@ -220,6 +221,32 @@ public abstract class BasePiece : EventTrigger
         transform.position += (Vector3)eventData.delta;
     }
 
+
+    public string TTSPlayerMove(string move)
+    {
+        if (!ValidMove(move))
+            return "Not A Valid Move: " + move;
+        else
+        {
+            UnityEngine.Debug.Log("move valid");
+            return "";
+        }
+    }
+
+
+    bool ValidMove(string move)
+    {
+        if (move.Length > 3)
+            return false;
+        //else if (move.Length == 3)
+            //code
+        //else if (move.Length == 2)
+            //code
+        else
+            return false;
+    }
+
+
     public override void OnEndDrag(PointerEventData eventData)
     {
         
@@ -281,7 +308,7 @@ public abstract class BasePiece : EventTrigger
                 //moveHistory.text += move + "\n";
                 //moveHistory.text += move + "\n";
 
-                //Debug.Log(move);
+                UnityEngine.Debug.Log("player moved");
 
 
 
@@ -377,7 +404,7 @@ public abstract class BasePiece : EventTrigger
         // If there is a piece, remove it
         targetCell.RemovePiece();
 
-        Debug.Log(targetCell.boardPosition);
+        UnityEngine.Debug.Log(targetCell.boardPosition);
 
         bool castling = false;
         // Handle castle
@@ -509,7 +536,7 @@ public abstract class BasePiece : EventTrigger
             {
                 pieceManager.gameState = GameState.PAT;
             }
-            Debug.Log(pieceManager.gameState);
+            UnityEngine.Debug.Log(pieceManager.gameState);
             pieceManager.ShowResult();
         }
     }
