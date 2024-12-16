@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.huggingface.api": "file:C:/Users/ommil/Downloads/unity-api-main/unity-api-main",
+    "com.huggingface.api": "file:../Assets/HuggingFaceAPI/unity-api-main/unity-api-main",
     "com.unity.2d.animation": "9.1.1",
     "com.unity.2d.pixel-perfect": "5.0.3",
     "com.unity.2d.psdimporter": "8.0.5",
