@@ -36,7 +36,7 @@ public class PieceManager : MonoBehaviour
     public GameObject piecePrefab;
     public TMP_Text result;
 
-    private List<BasePiece> whitePieces = null;
+    public List<BasePiece> whitePieces = null;
     private List<BasePiece> blackPieces = null;
 
     public static float blackTime = 60;
@@ -451,7 +451,7 @@ public class PieceManager : MonoBehaviour
         }
     }
 
-    void EnemyHistoryLog(string pieceSymbol, string endPosition)
+    public void EnemyHistoryLog(string pieceSymbol, string endPosition)
     {
         GameObject newButton = Instantiate(buttonPrefab, enemyMoveHolder.transform);
         TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -492,16 +492,6 @@ public class PieceManager : MonoBehaviour
 
         Button buttonComponent = newButton.GetComponent<Button>();
         buttonComponent.onClick.AddListener(() => mainCamera.ChangeAudio(buttonText.text));
-
-
-
-
-
-
-
-
-
-
 
 
 
