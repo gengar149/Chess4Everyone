@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
+using System;
 //using System.Diagnostics.Eventing.Reader;
 
 namespace HuggingFace.API.Examples {
@@ -20,6 +21,8 @@ namespace HuggingFace.API.Examples {
         [SerializeField] GameObject canvas;
         [SerializeField] GameManager gameManager;
         [SerializeField] Toggle toggle;
+
+        [SerializeField] Board board;
 
         List<string> sandboxWords = new List<string>
         {
@@ -170,15 +173,67 @@ namespace HuggingFace.API.Examples {
                 toggle.isOn = !toggle.isOn;
             else if (exitWords.Contains(move))
                 gameManager.BackMenu();
-            //else
-            //  TTSPlayerMove(move);
+            else if (move.StartsWith("move"))
+            {
+                string[] parts = move.Split(' ');
 
-            UnityEngine.Debug.Log(move.Length);
+
+                if (parts[2] == "to")
+                {
+
+                    int p1 = ParseMove(parts[1][0]);
+                    int p2 = Convert.ToInt32(parts[1][1].ToString());
+
+                    int p3 = ParseMove(parts[3][0]);
+                    int p4 = Convert.ToInt32(parts[3][1].ToString());
+
+
+
+                    board.allCells[p1][p2-1].currentPiece.GetComponent<BasePiece>().TTsSelect();
+                    
+                    Cell targetCell = board.allCells[p3][p4-1];
+                    board.allCells[p1][p2-1].currentPiece.GetComponent<BasePiece>().TTsDrop(targetCell);
+
+
+
+                }
+
+                else
+                    UnityEngine.Debug.Log("Not valid move");
+
+
+                
+
+
+
+            }
+            //UnityEngine.Debug.Log(move.Length);
 
 
         }
 
-
+        int ParseMove(char letter)
+        {
+            int num = 0;
+            if (letter == 'a')
+                num = 0;
+            if (letter == 'b')
+                num = 1;
+            if (letter == 'c')
+                num = 2;
+            if (letter == 'd')
+                num = 3;
+            if (letter == 'e')
+                num = 4;
+            if (letter == 'f')
+                num = 5;
+            if (letter == 'g')
+                num = 6;
+            if (letter == 'h')
+                num = 7;
+            UnityEngine.Debug.Log(num);
+            return num;
+        }
 
 
 

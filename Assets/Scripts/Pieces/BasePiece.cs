@@ -213,6 +213,26 @@ public abstract class BasePiece : EventTrigger
         transform.SetAsLastSibling();
     }
 
+
+
+
+    public void TTsSelect()
+    {
+
+        inDrag = true;
+
+        // Test for cells
+        CheckPathing();
+
+        // Show valid cells
+        ShowCellsHighlight();
+
+        transform.SetAsLastSibling();
+    }
+
+
+
+
     public override void OnDrag(PointerEventData eventData)
     {
         base.OnDrag(eventData);
@@ -245,6 +265,145 @@ public abstract class BasePiece : EventTrigger
         else
             return false;
     }
+
+
+
+
+
+
+    public void TTsDrop(Cell newCell)
+    {
+
+        inDrag = false;
+
+        // Get target cell
+        targetCell = null;
+        //foreach (Cell cell in highlightedCells)
+        //{
+
+            //if newCell is in highlightedCells - do stuff
+            if (highlightedCells.Contains(newCell))
+            {
+                targetCell = newCell;
+//                break;
+            }
+        //}
+
+
+        //leave as is
+        // Return to his original position
+        if (!targetCell || pieceManager.gameState != GameState.INGAME)
+        {
+            transform.position = currentCell.transform.position; // gameObject
+        }
+        else
+        {
+            if (PieceManager.IAmode)
+            {
+                string move = "";
+                move += pieceManager.posA[currentCell.boardPosition.x];
+                move += pieceManager.posB[currentCell.boardPosition.y];
+                move += pieceManager.posA[targetCell.boardPosition.x];
+                move += pieceManager.posB[targetCell.boardPosition.y];
+                // If promotion
+                if (this.GetType() == typeof(Pawn) && (TargetCell.boardPosition.y == 0 || TargetCell.boardPosition.y == 7))
+                {
+                    move += "q";
+                }
+                string symbol = "";
+
+                if (currentCell.currentPiece.GetType() == typeof(Queen))
+                    symbol = "Q";
+
+                else if (currentCell.currentPiece.GetType() == typeof(King))
+                    symbol = "K";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Bishop))
+                    symbol = "B";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Rook))
+                    symbol = "R";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Knight))
+                    symbol = "K";
+                else
+                    symbol = "";
+
+
+                pieceManager.PrintPlayerMoves(symbol + pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
+                //moveHistory.text += move + "\n";
+                //moveHistory.text += move + "\n";
+
+                UnityEngine.Debug.Log("player moved");
+
+
+
+
+
+
+
+                pieceManager.stockfish.setIAmove(move);
+                Move();
+            }
+            else
+            {
+                string move = "";
+                move += pieceManager.posA[currentCell.boardPosition.x];
+                move += pieceManager.posB[currentCell.boardPosition.y];
+                move += pieceManager.posA[targetCell.boardPosition.x];
+                move += pieceManager.posB[targetCell.boardPosition.y];
+
+                if (this.GetType() == typeof(Pawn) && (TargetCell.boardPosition.y == 0 || TargetCell.boardPosition.y == 7))
+                {
+                    move += "q";
+                }
+                string symbol = "";
+
+                if (currentCell.currentPiece.GetType() == typeof(Queen))
+                    symbol = "Q";
+
+                else if (currentCell.currentPiece.GetType() == typeof(King))
+                    symbol = "K";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Bishop))
+                    symbol = "B";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Rook))
+                    symbol = "R";
+
+                else if (currentCell.currentPiece.GetType() == typeof(Knight))
+                    symbol = "K";
+                else
+                    symbol = "";
+
+                if (pieceManager.whitePieces.Contains(this))
+                {
+
+                    pieceManager.PrintPlayerMoves(symbol + pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
+                    Move();
+                }
+                else
+                {
+                    pieceManager.EnemyHistoryLog(symbol, pieceManager.posA[targetCell.boardPosition.x] + pieceManager.posB[targetCell.boardPosition.y]);
+                    Move();
+                }
+            }
+        }
+
+        // Hide Highlited
+        ClearCellsHighlight();
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
     public override void OnEndDrag(PointerEventData eventData)
