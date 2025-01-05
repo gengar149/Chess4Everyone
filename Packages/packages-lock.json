@@ -15,6 +15,14 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.srcnalt.openai-unity": {
+      "version": "file:OpenAI-Unity-master/OpenAI-Unity-master",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.1.1",
       "depth": 0,

@@ -7,6 +7,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
 using System;
+using System.Security.Principal;
+using System.Net.Mime;
+//using OpenAI_Api;
 //using System.Diagnostics.Eventing.Reader;
 
 namespace HuggingFace.API.Examples {
@@ -23,6 +26,18 @@ namespace HuggingFace.API.Examples {
         [SerializeField] Toggle toggle;
 
         [SerializeField] Board board;
+
+        //OpenAI_API.OpenAIAPI openai;
+        string prompt = "Look at the string and fix it to have the correct format so the move can be completed for a chess game." +
+            "The correct format is:" +
+            "move {location} to {location}" +
+            "example: move a2 to a3." +
+            "There might be errors in the text, for example it might say 'move a 2 too a 4', you should correct it to say 'move a2 to a4'." +
+            "The string might only say 'a2 a4', you should correct this to 'move a2 to a4' so the move is correctly completed." +
+            "If you are unsure of what the intended move is supposed to be, re state their move and say you dont undersatand.";
+
+
+
 
         List<string> sandboxWords = new List<string>
         {
@@ -78,6 +93,13 @@ namespace HuggingFace.API.Examples {
             "restart",
             "we start"
         };
+
+
+
+        void Start()
+        {
+            //var aopenAI = new OpenAIApi("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");
+        }
 
         private void Update() {
             if (Input.GetKeyDown(KeyCode.Space)) {
@@ -167,12 +189,16 @@ namespace HuggingFace.API.Examples {
         void MovePiece(string move)
         {
             text.text = move;
+            //string newMove = FixMove(move);
             if (restartWords.Contains(move))
                 gameManager.Reload();
             else if (TTsWords.Contains(move))
                 toggle.isOn = !toggle.isOn;
             else if (exitWords.Contains(move))
                 gameManager.BackMenu();
+
+            
+
             else if (move.StartsWith("move"))
             {
                 string[] parts = move.Split(' ');
@@ -193,23 +219,11 @@ namespace HuggingFace.API.Examples {
                     
                     Cell targetCell = board.allCells[p3][p4-1];
                     board.allCells[p1][p2-1].currentPiece.GetComponent<BasePiece>().TTsDrop(targetCell);
-
-
-
                 }
 
                 else
                     UnityEngine.Debug.Log("Not valid move");
-
-
-                
-
-
-
             }
-            //UnityEngine.Debug.Log(move.Length);
-
-
         }
 
         int ParseMove(char letter)
@@ -234,8 +248,33 @@ namespace HuggingFace.API.Examples {
             UnityEngine.Debug.Log(num);
             return num;
         }
+        /*
+        string FixMove(string move)
+        {
+
+            var response = await openai.CreateChatCompletion(new CreateChatCompletionRequest
+            {
+                Model = "gpt-4o-mini",
+                Messages = new List<ChatMessage>()
+                {
+                    new ChatMessage
+                    {
+                        Role = "user",
+                        ContentDisposition = prompt
+                    }
+                }
+            });
+
+            if (response.Choices != null && completionResponse.Choices.Count > 0)
+            {
+                var message = completionResponse.Choices[0].Message;
+                return message.Content.Trim();
+                
+                message.Content = message.Content.Trim();
+            }
 
 
+        }*/
 
 
 
