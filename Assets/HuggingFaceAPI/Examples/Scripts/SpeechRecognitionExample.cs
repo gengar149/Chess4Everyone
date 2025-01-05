@@ -98,7 +98,7 @@ namespace HuggingFace.API.Examples {
 
         void Start()
         {
-            //var aopenAI = new OpenAIApi("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");
+            
         }
 
         private void Update() {
