@@ -1076,9 +1076,9 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: IA Noirs
+    - m_Text: AI Black
       m_Image: {fileID: 0}
-    - m_Text: IA Blancs
+    - m_Text: AI White
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6108,7 +6108,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: IA Noirs
+  m_text: AI Black
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 97f8d970729fdcc40a1074a333525b45, type: 2}
   m_sharedMaterial: {fileID: 8938629297386094100, guid: 97f8d970729fdcc40a1074a333525b45,
