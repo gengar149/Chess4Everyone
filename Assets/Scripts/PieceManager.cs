@@ -183,14 +183,14 @@ public class PieceManager : MonoBehaviour
             if (isIAWithe)
             {
                 StartCoroutine(showIAMoveCoroutine());
-                clockManager.displayBlack.text = "Joueur";
-                clockManager.displayWhite.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
+                clockManager.displayBlack.text = "Player";
+                clockManager.displayWhite.text = "AI Level " + IA.IA_Game_Level[IA.level];
             }
             else
             {
                 SetInteractive(whitePieces, true);
-                clockManager.displayWhite.text = "Joueur";
-                clockManager.displayBlack.text = "IA Niveau " + IA.IA_Game_Level[IA.level];
+                clockManager.displayWhite.text = "Player";
+                clockManager.displayBlack.text = "AI Level " + IA.IA_Game_Level[IA.level];
             }
         }
         else
@@ -560,7 +560,7 @@ public class PieceManager : MonoBehaviour
     /// </summary>
     public void ShowResult()
     {        
-        audio.PlayOneShot((AudioClip)Resources.Load("Sounds/basic/end"));
+        audio.PlayOneShot((AudioClip)Resources.Load("Sounds/basic/laser"));
 
         SetInteractive(whitePieces, false);
         SetInteractive(blackPieces, false);
@@ -580,13 +580,13 @@ public class PieceManager : MonoBehaviour
         yield return new WaitForSeconds((float)2.1);
         if (gameState == GameState.BLACK_WIN)
         {
-            result.text = "Victoire des Noirs";
+            result.text = "Black Wins";
             clockManager.highlightClockB.SetActive(true);
             clockManager.highlightClockB.GetComponent<Image>().color = new Color(1, (float)0.6816, 0, 1);
         }
         if (gameState == GameState.WHITE_WIN)
         {
-            result.text = "Victoire des Blancs";
+            result.text = "White Wins";
             clockManager.highlightClockW.SetActive(true);
             clockManager.highlightClockW.GetComponent<Image>().color = new Color(1, (float)0.6816, 0, 1);
 

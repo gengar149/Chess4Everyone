@@ -606,7 +606,7 @@ public abstract class BasePiece : EventTrigger
         if (isCheckVerif(isWhite))
         {
             pieceManager.getKing(!isWhite).setCheck(true);
-            clip = (AudioClip)Resources.Load("Sounds/basic/check");
+            clip = (AudioClip)Resources.Load("Sounds/basic/servant-bell-ring");
         }
         
         pieceManager.checkVerificationInProcess = false;
