@@ -25,7 +25,13 @@ public class IA : MonoBehaviour
     public void Setup()
     {
         process = new System.Diagnostics.Process();
-        process.StartInfo.FileName = Application.dataPath + "/Resources/IA/stockfish_13/stockfish_13_win_x64.exe";
+        string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "IA/stockfish_13/stockfish_13_win_x64.exe");
+        if (!System.IO.File.Exists(filePath))
+        {
+            Debug.LogError("Stockfish executable not found at: " + filePath);
+            return;
+        }
+        process.StartInfo.FileName = filePath;
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
         process.StartInfo.RedirectStandardInput = true;

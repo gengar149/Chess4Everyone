@@ -2136,7 +2136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40e181ef7f384f5e895d4dc3eee0702, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voice: Lily
+  voice: "Amy\r"
   dialogue: ahhh
 --- !u!1 &632188758
 GameObject:

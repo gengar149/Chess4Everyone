@@ -24,6 +24,10 @@ namespace LMNT
             }
             _apiKey = LMNTLoader.LoadApiKey();
             _voiceList = LMNTLoader.LoadVoices();
+
+            foreach (Voice voice in _voiceList) {
+                print(voice.name);
+            }
         }
 
         public IEnumerator Prefetch()
@@ -35,9 +39,23 @@ namespace LMNT
                 _handler = null;
             }
 
+            // Validate and prepare the data
+            string voiceId = LookupByName(voice);
+            if (string.IsNullOrEmpty(voiceId))
+            {
+                Debug.LogError("Voice is null or not found in the voice list.");
+                yield break;
+            }
+
+            if (string.IsNullOrEmpty(dialogue))
+            {
+                Debug.LogError("Dialogue is null or empty.");
+                yield break;
+            }
+
             // Prepare a new request with the updated dialogue text
             WWWForm form = new WWWForm();
-            form.AddField("voice", LookupByName(voice));
+            form.AddField("voice", voiceId);
             form.AddField("text", dialogue);
 
             using (UnityWebRequest request = UnityWebRequest.Post(Constants.LMNT_SYNTHESIZE_URL, form))
@@ -57,7 +75,7 @@ namespace LMNT
                     }
                     catch
                     {
-                        Debug.LogError("something broken in LMNTSpeech \nPrefetch function");
+                        Debug.LogError("Error processing audio clip in LMNTSpeech Prefetch function.");
                     }
                 }
                 else
@@ -66,6 +84,7 @@ namespace LMNT
                 }
             }
         }
+
 
         public IEnumerator Talk()
         {
