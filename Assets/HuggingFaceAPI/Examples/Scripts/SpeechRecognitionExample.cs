@@ -9,8 +9,7 @@ using System.Runtime.CompilerServices;
 using System;
 using System.Security.Principal;
 using System.Net.Mime;
-//using OpenAI_Api;
-//using System.Diagnostics.Eventing.Reader;
+
 
 namespace HuggingFace.API.Examples {
     public class SpeechRecognitionExample : MonoBehaviour {
@@ -26,17 +25,6 @@ namespace HuggingFace.API.Examples {
         [SerializeField] Toggle toggle;
 
         [SerializeField] Board board;
-
-        //OpenAI_API.OpenAIAPI openai;
-        string prompt = "Look at the string and fix it to have the correct format so the move can be completed for a chess game." +
-            "The correct format is:" +
-            "move {location} to {location}" +
-            "example: move a2 to a3." +
-            "There might be errors in the text, for example it might say 'move a 2 too a 4', you should correct it to say 'move a2 to a4'." +
-            "The string might only say 'a2 a4', you should correct this to 'move a2 to a4' so the move is correctly completed." +
-            "If you are unsure of what the intended move is supposed to be, re state their move and say you dont undersatand.";
-
-
 
 
         List<string> sandboxWords = new List<string>
@@ -95,12 +83,6 @@ namespace HuggingFace.API.Examples {
         };
 
 
-
-        void Start()
-        {
-            
-        }
-
         private void Update() {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 if (recording)
@@ -117,8 +99,7 @@ namespace HuggingFace.API.Examples {
         private void StartRecording() {
             text.color = Color.white;
             text.text = "Recording...";
-            //startButton.interactable = false;
-            //stopButton.interactable = true;
+
             clip = Microphone.Start(null, false, 10, 44100);
             recording = true;
         }
@@ -136,13 +117,11 @@ namespace HuggingFace.API.Examples {
         private void SendRecording() {
             text.color = Color.yellow;
             text.text = "Sending...";
-            //stopButton.interactable = false;
+
             HuggingFaceAPI.AutomaticSpeechRecognition(bytes, response => {
                 text.color = Color.white;
-                //text.text = response;
 
-
-                response = response.Replace(",", "").Replace(".", "").Replace("?", "").Replace("!", "").Replace("'", "").ToLower().Trim();
+                response = response.Replace(",", "").Replace(".", "").Replace("?", "").Replace("!", "").Replace("'", "").Replace("-", " ").ToLower().Trim();
                 text.text = response;
 
                 if (SceneManager.GetActiveScene().name == "MenuScene")
@@ -150,13 +129,10 @@ namespace HuggingFace.API.Examples {
                 else
                     MovePiece(response);
 
-
-
-                //startButton.interactable = true;
             }, error => {
                 text.color = Color.red;
                 text.text = error;
-                //startButton.interactable = true;
+
             });
         }
 
@@ -189,7 +165,6 @@ namespace HuggingFace.API.Examples {
         void MovePiece(string move)
         {
             text.text = move;
-            //string newMove = FixMove(move);
             if (restartWords.Contains(move))
                 gameManager.Reload();
             else if (TTsWords.Contains(move))
@@ -197,33 +172,46 @@ namespace HuggingFace.API.Examples {
             else if (exitWords.Contains(move))
                 gameManager.BackMenu();
 
-            
-
             else if (move.StartsWith("move"))
             {
                 string[] parts = move.Split(' ');
-
-
-                if (parts[2] == "to")
+                if (parts[2] == "to" || parts[1] == "2")
                 {
-
                     int p1 = ParseMove(parts[1][0]);
                     int p2 = Convert.ToInt32(parts[1][1].ToString());
 
                     int p3 = ParseMove(parts[3][0]);
                     int p4 = Convert.ToInt32(parts[3][1].ToString());
 
-
-
                     board.allCells[p1][p2-1].currentPiece.GetComponent<BasePiece>().TTsSelect();
                     
                     Cell targetCell = board.allCells[p3][p4-1];
                     board.allCells[p1][p2-1].currentPiece.GetComponent<BasePiece>().TTsDrop(targetCell);
                 }
-
-                else
-                    UnityEngine.Debug.Log("Not valid move");
             }
+
+
+            else
+            {
+                string[] parts = move.Split(' ');
+                if (parts[1] == "to" || parts[1] == "2")
+                {
+                    int p1 = ParseMove(parts[0][0]);
+                    int p2 = Convert.ToInt32(parts[0][1].ToString());
+
+                    int p3 = ParseMove(parts[2][0]);
+                    int p4 = Convert.ToInt32(parts[2][1].ToString());
+
+                    board.allCells[p1][p2 - 1].currentPiece.GetComponent<BasePiece>().TTsSelect();
+
+                    Cell targetCell = board.allCells[p3][p4 - 1];
+                    board.allCells[p1][p2 - 1].currentPiece.GetComponent<BasePiece>().TTsDrop(targetCell);
+                }
+            }
+
+
+
+
         }
 
         int ParseMove(char letter)
@@ -231,52 +219,24 @@ namespace HuggingFace.API.Examples {
             int num = 0;
             if (letter == 'a')
                 num = 0;
-            if (letter == 'b')
+            else if (letter == 'b')
                 num = 1;
-            if (letter == 'c')
+            else if (letter == 'c')
                 num = 2;
-            if (letter == 'd')
+            else if (letter == 'd')
                 num = 3;
-            if (letter == 'e')
+            else if (letter == 'e')
                 num = 4;
-            if (letter == 'f')
+            else if (letter == 'f')
                 num = 5;
-            if (letter == 'g')
+            else if (letter == 'g')
                 num = 6;
-            if (letter == 'h')
+            else if (letter == 'h')
                 num = 7;
-            UnityEngine.Debug.Log(num);
+            else
+                return 8;
             return num;
         }
-        /*
-        string FixMove(string move)
-        {
-
-            var response = await openai.CreateChatCompletion(new CreateChatCompletionRequest
-            {
-                Model = "gpt-4o-mini",
-                Messages = new List<ChatMessage>()
-                {
-                    new ChatMessage
-                    {
-                        Role = "user",
-                        ContentDisposition = prompt
-                    }
-                }
-            });
-
-            if (response.Choices != null && completionResponse.Choices.Count > 0)
-            {
-                var message = completionResponse.Choices[0].Message;
-                return message.Content.Trim();
-                
-                message.Content = message.Content.Trim();
-            }
-
-
-        }*/
-
-
 
 
         void Sandbox()
